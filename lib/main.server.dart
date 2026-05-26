@@ -105,11 +105,17 @@ void main() {
         // -----------------------------------------------------------------
         // Favicons
         //
-        // Modern browsers prefer the PNG; we keep favicon.ico as the
-        // fallback for legacy clients (IE / Outlook / Windows tiles).
+        // Single source of truth: images/logo_site_1.png. The
+        // `sizes="any"` hint tells the browser this raster icon scales
+        // to any tab/bookmark size, overriding the auto-fetched
+        // /favicon.ico (which no longer exists in our build output).
         // -----------------------------------------------------------------
-        link(rel: 'icon', href: 'images/logo_site_1.png', type: 'image/png'),
-        link(rel: 'shortcut icon', href: 'favicon.ico'),
+        link(
+          rel: 'icon',
+          href: 'images/logo_site_1.png',
+          type: 'image/png',
+          attributes: {'sizes': 'any'},
+        ),
         link(
           rel: 'apple-touch-icon',
           href: 'images/logo_site_1.png',
@@ -136,7 +142,8 @@ void main() {
         ),
         link(
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2'
+          href:
+              'https://fonts.googleapis.com/css2'
               '?family=Inter:wght@400;500;600;700'
               '&family=JetBrains+Mono:wght@400;500;600'
               '&display=swap',
@@ -150,23 +157,23 @@ void main() {
         // -----------------------------------------------------------------
         // Open Graph (Facebook / LinkedIn / generic link previews)
         // -----------------------------------------------------------------
-        meta(attributes: {'property': 'og:type',        'content': 'website'}),
-        meta(attributes: {'property': 'og:site_name',   'content': _siteTitle}),
-        meta(attributes: {'property': 'og:title',       'content': _siteTitle}),
+        meta(attributes: {'property': 'og:type', 'content': 'website'}),
+        meta(attributes: {'property': 'og:site_name', 'content': _siteTitle}),
+        meta(attributes: {'property': 'og:title', 'content': _siteTitle}),
         meta(attributes: {'property': 'og:description', 'content': _siteDescription}),
-        meta(attributes: {'property': 'og:url',         'content': _siteUrl}),
-        meta(attributes: {'property': 'og:image',       'content': '$_siteUrl$_ogImage'}),
+        meta(attributes: {'property': 'og:url', 'content': _siteUrl}),
+        meta(attributes: {'property': 'og:image', 'content': '$_siteUrl$_ogImage'}),
         meta(attributes: {'property': 'og:image:width', 'content': '1200'}),
-        meta(attributes: {'property': 'og:image:height','content': '630'}),
-        meta(attributes: {'property': 'og:locale',      'content': 'en_US'}),
+        meta(attributes: {'property': 'og:image:height', 'content': '630'}),
+        meta(attributes: {'property': 'og:locale', 'content': 'en_US'}),
 
         // -----------------------------------------------------------------
         // Twitter / X card
         // -----------------------------------------------------------------
-        meta(name: 'twitter:card',        content: 'summary_large_image'),
-        meta(name: 'twitter:title',       content: _siteTitle),
+        meta(name: 'twitter:card', content: 'summary_large_image'),
+        meta(name: 'twitter:title', content: _siteTitle),
         meta(name: 'twitter:description', content: _siteDescription),
-        meta(name: 'twitter:image',       content: '$_siteUrl$_ogImage'),
+        meta(name: 'twitter:image', content: '$_siteUrl$_ogImage'),
 
         // -----------------------------------------------------------------
         // Theme bootstrap — MUST run before paint to avoid FOUC.
