@@ -4,12 +4,14 @@
 /// mode). For browser-side code see `main.client.dart`.
 library;
 
+import 'package:jaspr/dom.dart';
 import 'package:jaspr/server.dart';
 
 import 'app.dart';
 // Importing these files (even just for the side effect of their `@css`
 // annotations) ensures the Jaspr builder includes those rules in the
 // generated stylesheet.
+import 'core/animations/animation_scripts.dart';
 import 'core/animations/animation_styles.dart';
 import 'core/theme/global_styles.dart';
 // Generated file — do not edit.
@@ -34,6 +36,13 @@ void main() {
         'author': 'Barhoumi Abdelkader',
         'theme-color': '#080810',
       },
+      head: const [
+        // Vanilla-JS bundle: IntersectionObserver reveals, typewriter,
+        // navbar scroll behavior, ScrollSpy, 3D tilt, custom cursor.
+        // `defer` so it doesn't block parsing — the script itself also
+        // waits for DOMContentLoaded as a belt + suspenders.
+        script(defer: true, content: animationScripts),
+      ],
       body: const App(),
     ),
   );
