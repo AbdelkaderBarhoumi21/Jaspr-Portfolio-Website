@@ -7,9 +7,10 @@ library;
 import 'package:jaspr/server.dart';
 
 import 'app.dart';
-// Importing `global_styles.dart` (even just for its side effect of having
-// the `@css` annotation) ensures the Jaspr builder includes those rules
-// in the generated stylesheet.
+// Importing these files (even just for the side effect of their `@css`
+// annotations) ensures the Jaspr builder includes those rules in the
+// generated stylesheet.
+import 'core/animations/animation_styles.dart';
 import 'core/theme/global_styles.dart';
 // Generated file — do not edit.
 import 'main.server.options.dart';
@@ -17,10 +18,10 @@ import 'main.server.options.dart';
 void main() {
   Jaspr.initializeApp(options: defaultServerOptions);
 
-  // Touch the global styles getter so the import is never tree-shaken.
+  // Touch the style getters so the imports are never tree-shaken.
   // (Cheap — runs once at server startup.)
   // ignore: unused_local_variable
-  final _ = globalStyles;
+  final _ = [globalStyles, animationStyles];
 
   runApp(
     Document(
