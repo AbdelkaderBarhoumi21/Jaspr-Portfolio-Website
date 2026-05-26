@@ -1,19 +1,23 @@
 // The single page shell.
 //
+//   <ScrollProgress />          ← thin gradient bar at the very top
 //   <Navbar />
 //   <main>
 //     ...sections (passed in by app.dart)...
 //   </main>
 //   <Footer />
-//   <CursorDot/>  <CursorRing/>   ← hooked by animation_scripts.dart
+//   <BackToTop />               ← floating FAB shown past the hero
+//   <CursorDot/>  <CursorRing/> ← hooked by animation_scripts.dart
 //
-// Keeping the cursor elements here means every page (even if we add
-// routed sub-pages later) inherits them once.
+// Keeping these elements here means every page (even if we add routed
+// sub-pages later) inherits them once.
 
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../widgets/back_to_top.dart';
+import '../widgets/scroll_progress.dart';
 import 'footer.dart';
 import 'navbar.dart';
 
@@ -27,9 +31,13 @@ class AppLayout extends StatelessComponent {
   @override
   Component build(BuildContext context) {
     return div(classes: 'app', [
+      // Top-of-page scroll progress bar (z-index above navbar).
+      const ScrollProgress(),
       const Navbar(),
       main_(sections, classes: 'app__main'),
       const Footer(),
+      // Floating back-to-top FAB — JS toggles .is-visible past ~600px.
+      const BackToTop(),
       // Custom cursor — visible only on fine pointers; animation_scripts.dart
       // attaches mousemove/raf to update transforms.
       div(

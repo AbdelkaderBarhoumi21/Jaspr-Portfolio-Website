@@ -115,20 +115,64 @@ const String animationScripts = r'''
     });
 
     // ---------------------------------------------------------------
-    // 3. Navbar scroll behavior — toggles .is-scrolled past 40px
+    // 3. Scroll-driven UI: navbar blur, progress bar, back-to-top FAB.
+    //    Single rAF-throttled listener that updates all three to avoid
+    //    layout thrash on fast scrolls.
     // ---------------------------------------------------------------
-    const navbar = document.querySelector('[data-navbar]');
-    if (navbar) {
-      let lastScrolled = false;
-      const onScroll = () => {
-        const scrolled = window.scrollY > 40;
-        if (scrolled !== lastScrolled) {
-          navbar.classList.toggle('is-scrolled', scrolled);
-          lastScrolled = scrolled;
+    {
+      const navbar    = document.querySelector('[data-navbar]');
+      const progress  = document.querySelector('[data-scroll-progress]');
+      const backTop   = document.querySelector('[data-back-to-top]');
+
+      let lastScrolled  = false;   // navbar .is-scrolled flag
+      let lastVisible   = false;   // back-to-top .is-visible flag
+      let scheduled     = false;   // rAF de-dupe
+
+      const apply = () => {
+        scheduled = false;
+        const y = window.scrollY;
+
+        // (a) Navbar blur once we leave the very top.
+        if (navbar) {
+          const scrolled = y > 40;
+          if (scrolled !== lastScrolled) {
+            navbar.classList.toggle('is-scrolled', scrolled);
+            lastScrolled = scrolled;
+          }
+        }
+
+        // (b) Progress bar — fraction of the document scrolled.
+        //     `scrollHeight - innerHeight` is the max scrollable distance.
+        if (progress) {
+          const max = Math.max(
+            document.documentElement.scrollHeight - window.innerHeight,
+            1
+          );
+          const ratio = Math.min(Math.max(y / max, 0), 1);
+          progress.style.setProperty('--progress', ratio.toFixed(4));
+        }
+
+        // (c) Back-to-top button — show after ~600px of scroll.
+        if (backTop) {
+          const visible = y > 600;
+          if (visible !== lastVisible) {
+            backTop.classList.toggle('is-visible', visible);
+            lastVisible = visible;
+          }
         }
       };
-      onScroll();
+
+      const onScroll = () => {
+        if (!scheduled) {
+          scheduled = true;
+          requestAnimationFrame(apply);
+        }
+      };
+
+      // Run once on load so initial state is correct (refresh mid-page).
+      apply();
       window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
     }
 
     // ---------------------------------------------------------------
