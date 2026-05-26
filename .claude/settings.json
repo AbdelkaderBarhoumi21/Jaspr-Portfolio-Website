@@ -3,7 +3,9 @@
     "allow": [
       "Bash(dart analyze *)",
       "Bash(rm -f lib/components/header.dart lib/components/counter.dart lib/pages/home.dart lib/pages/about.dart lib/constants/theme.dart)",
-      "Bash(rmdir lib/components lib/pages lib/constants)"
+      "Bash(rmdir lib/components lib/pages lib/constants)",
+      "Bash(dart pub *)",
+      "Read(//c/Users/abdel/AppData/Local/Pub/Cache/bin/**)"
     ]
   }
 }
