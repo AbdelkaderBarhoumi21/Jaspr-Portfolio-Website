@@ -297,7 +297,7 @@ class Navbar extends StatelessComponent {
     css('.mobile-menu__link:hover').styles(color: AppColors.secondary),
 
     // ----- Responsive: show links on desktop, hide hamburger -----
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.navbar__links').styles(display: Display.flex),
       css('.cmdk-hint').styles(display: Display.inlineFlex),
       css('.nav-toggle').styles(display: Display.none),

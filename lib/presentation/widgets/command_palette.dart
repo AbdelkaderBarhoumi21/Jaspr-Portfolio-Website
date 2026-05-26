@@ -515,7 +515,7 @@ class CommandPalette extends StatelessComponent {
     }),
 
     // Reduced motion: keep visibility transitions, drop the pop animation.
-    css('@media (prefers-reduced-motion: reduce)', [
+    css.media(MediaQuery.raw('(prefers-reduced-motion: reduce)'), [
       css('.cmdk__backdrop').styles(raw: {'animation': 'none'}),
       css('.cmdk__panel').styles(raw: {'animation': 'none'}),
     ]),

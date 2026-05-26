@@ -56,7 +56,7 @@ class SectionContainer extends StatelessComponent {
       position: Position.relative(),
       raw: {'z-index': '1'},
     ),
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.section').styles(
         padding: Padding.symmetric(
           horizontal: AppSpacing.gutterDesktop.rem,

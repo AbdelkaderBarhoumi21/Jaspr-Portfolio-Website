@@ -125,7 +125,7 @@ class ContactSection extends StatelessComponent {
     // Tablet and up — go straight to 3 columns. We deliberately do
     // NOT wait for bpMd (768px) here; the rows are compact enough
     // that even a 600px-wide tablet fits all three.
-    css('@media (min-width: 600px)', [
+    css.media(MediaQuery.raw('(min-width: 600px)'), [
       css('.contact__grid').styles(
         raw: {
           'grid-template-columns': 'repeat(3, minmax(0, 1fr))',

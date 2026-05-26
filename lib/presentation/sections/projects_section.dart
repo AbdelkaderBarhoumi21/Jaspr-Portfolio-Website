@@ -86,14 +86,14 @@ class ProjectsSection extends StatelessComponent {
     ),
 
     // ----- Tablet: 2 columns -----
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.projects__grid').styles(raw: {
         'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
       }),
     ]),
 
     // ----- Desktop: 3 columns -----
-    css('@media (min-width: ${AppSpacing.bpLg.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpLg.toInt()}px)'), [
       css('.projects__grid').styles(raw: {
         'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
       }),

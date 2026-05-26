@@ -231,7 +231,7 @@ class HeroSection extends StatelessComponent {
     }),
 
     // ----- Tablet+ tweaks -----
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.hero__tagline').styles(fontSize: 1.2.rem),
       css('.hero__role').styles(fontSize: 1.2.rem),
       css('.hero__role-label').styles(fontSize: 1.2.rem),

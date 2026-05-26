@@ -112,7 +112,7 @@ class AppLayout extends StatelessComponent {
     ),
 
     // On touch / coarse pointers, hide both — finger/OS cursor is enough.
-    css('@media (pointer: coarse)', [
+    css.media(MediaQuery.raw('(pointer: coarse)'), [
       css('.cursor').styles(display: Display.none),
     ]),
   ];

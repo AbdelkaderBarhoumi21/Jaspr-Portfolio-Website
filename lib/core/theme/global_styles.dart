@@ -276,7 +276,7 @@ List<StyleRule> get globalStyles => [
   // 8. Reduced-motion safety net.
   //    Animation files also honor this — belt + suspenders.
   // -----------------------------------------------------------------
-  css('@media (prefers-reduced-motion: reduce)', [
+  css.media(MediaQuery.raw('(prefers-reduced-motion: reduce)'), [
     css('*, *::before, *::after').styles(raw: {
       'animation-duration': '0.01ms !important',
       'animation-iteration-count': '1 !important',

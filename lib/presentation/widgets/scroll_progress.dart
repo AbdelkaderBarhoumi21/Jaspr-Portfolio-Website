@@ -54,7 +54,7 @@ class ScrollProgress extends StatelessComponent {
 
     // Reduced motion: don't animate the transform — it still works,
     // just snaps instead of interpolating.
-    css('@media (prefers-reduced-motion: reduce)', [
+    css.media(MediaQuery.raw('(prefers-reduced-motion: reduce)'), [
       css('.scroll-progress__fill').styles(raw: {
         'transition': 'none',
       }),

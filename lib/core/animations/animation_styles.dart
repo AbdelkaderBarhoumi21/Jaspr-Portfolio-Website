@@ -170,7 +170,7 @@ List<StyleRule> get animationStyles => [
     'will-change': 'transform',
   }),
   // Pointer-coarse devices (phones, tablets) skip the effect entirely.
-  css('@media (pointer: coarse)', [
+  css.media(MediaQuery.raw('(pointer: coarse)'), [
     css('.magnetic').styles(raw: {'transform': 'none'}),
   ]),
 
@@ -202,7 +202,7 @@ List<StyleRule> get animationStyles => [
   // ===================================================================
   // 11. Reduced-motion overrides — neutralize transforms, keep opacity.
   // ===================================================================
-  css('@media (prefers-reduced-motion: reduce)', [
+  css.media(MediaQuery.raw('(prefers-reduced-motion: reduce)'), [
     css('.reveal-up, .reveal-left, .reveal-right, .reveal-scale').styles(raw: {
       'opacity': '1',
       'transform': 'none',

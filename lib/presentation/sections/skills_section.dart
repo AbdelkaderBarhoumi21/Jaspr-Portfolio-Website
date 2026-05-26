@@ -83,7 +83,7 @@ class SkillsSection extends StatelessComponent {
     ),
 
     // ----- Tablet+: two columns -----
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.skills__grid').styles(raw: {
         'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
       }),

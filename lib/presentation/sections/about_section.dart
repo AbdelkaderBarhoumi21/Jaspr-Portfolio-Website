@@ -1,21 +1,3 @@
-// About section — bento grid.
-//
-// Layout idea (desktop ≥ bpLg, 3 columns × 3 rows):
-//
-//   ┌──────────────────┬──────────────────┐
-//   │  BIO   (2×2)     │  NOW             │
-//   │                  ├──────────────────┤
-//   │                  │  LOCATION        │
-//   ├──────┬───────────┴────┬─────────────┤
-//   │ YEARS│ APPS           │ LANGUAGES   │  (3 stat tiles)
-//   ├──────┴────────────────┴─────────────┤
-//   │  PHILOSOPHY  (3×1)                  │
-//   └─────────────────────────────────────┘
-//
-// On mobile the tiles stack into a single column.
-//
-// All tiles share `.glass` + a hover lift; each one carries `.reveal-up`
-// with a staggered `--i` so they pour in when the section enters view.
 
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
@@ -62,16 +44,24 @@ class AboutSection extends StatelessComponent {
   static List<StyleRule> get styles => [
     // ----- Grid container -----
     // Mobile-first: every tile takes a full row.
+    // `minmax(0, 1fr)` lets long bio text shrink to the column.
     css('.bento').styles(
       display: Display.grid,
-      gap: const Gap(row: Unit.rem(1.0), column: Unit.rem(1.0)),
-      raw: {'grid-template-columns': '1fr'},
+      gap: const Gap(row: Unit.rem(0.85), column: Unit.rem(0.85)),
+      raw: {'grid-template-columns': 'minmax(0, 1fr)'},
+    ),
+    // Defensive: ensure every direct child can shrink + fill its cell.
+    css('.bento > *').styles(
+      width: 100.percent,
+      raw: {'min-width': '0'},
     ),
 
     // ----- Base tile look -----
+    // Tighter padding (1rem instead of 1.5rem) — each tile reads as a
+    // dense info card, not a billboard.
     css('.bento-tile').styles(
       display: Display.flex,
-      padding: Padding.all(AppSpacing.lg.rem),
+      padding: Padding.all(AppSpacing.md.rem),
       flexDirection: FlexDirection.column,
       gap: Gap(row: AppSpacing.sm.rem),
       raw: {
@@ -87,11 +77,13 @@ class AboutSection extends StatelessComponent {
         'min-height': '100%', // fill grid cell when row-spanning
       },
     ),
-    css('.bento-tile:hover').styles(raw: {
-      'transform': 'translateY(-3px)',
-      'box-shadow': '0 14px 36px -16px rgba(108, 99, 255, 0.45)',
-      'border-color': 'rgba(108, 99, 255, 0.35)',
-    }),
+    css('.bento-tile:hover').styles(
+      raw: {
+        'transform': 'translateY(-3px)',
+        'box-shadow': '0 14px 36px -16px rgba(108, 99, 255, 0.45)',
+        'border-color': 'rgba(108, 99, 255, 0.35)',
+      },
+    ),
 
     css('.bento-tile__eyebrow').styles(
       color: AppColors.secondary,
@@ -107,11 +99,11 @@ class AboutSection extends StatelessComponent {
     // ----- Bio tile -----
     css('.bento-tile--bio p').styles(
       color: AppColors.textSecondary,
-      fontSize: 1.05.rem,
+      fontSize: 0.95.rem,
       lineHeight: const Unit.expression('${AppTypography.lineHeightBody}'),
     ),
     css('.bento-tile--bio p + p').styles(
-      margin: Margin.only(top: AppSpacing.md.rem),
+      margin: Margin.only(top: AppSpacing.sm.rem),
     ),
 
     // ----- Now tile -----
@@ -122,8 +114,7 @@ class AboutSection extends StatelessComponent {
       width: 120.px,
       height: 120.px,
       raw: {
-        'background':
-            'radial-gradient(circle, rgba(108, 99, 255, 0.40), transparent 70%)',
+        'background': 'radial-gradient(circle, rgba(108, 99, 255, 0.40), transparent 70%)',
         'filter': 'blur(20px)',
         'pointer-events': 'none',
       },
@@ -188,7 +179,7 @@ class AboutSection extends StatelessComponent {
         AppTypography.fontMono,
         FontFamilies.monospace,
       ]),
-      fontSize: 3.0.rem,
+      fontSize: 2.2.rem,
       fontWeight: AppTypography.bold,
       letterSpacing: const Unit.em(-0.02),
       raw: {'line-height': '1'},
@@ -211,10 +202,11 @@ class AboutSection extends StatelessComponent {
     ),
 
     // ----- Philosophy tile -----
-    css('.bento-tile--philosophy').styles(raw: {
-      'background':
-          'linear-gradient(135deg, rgba(108, 99, 255, 0.10), rgba(0, 217, 255, 0.05))',
-    }),
+    css('.bento-tile--philosophy').styles(
+      raw: {
+        'background': 'linear-gradient(135deg, rgba(108, 99, 255, 0.10), rgba(0, 217, 255, 0.05))',
+      },
+    ),
     css('.bento-tile--philosophy .philosophy__quote').styles(
       color: AppColors.textPrimary,
       fontSize: 1.15.rem,
@@ -235,51 +227,70 @@ class AboutSection extends StatelessComponent {
     ),
 
     // ----- Stagger ordering — drop a transition-delay per --i (set inline) -----
-    css('.bento > *').styles(raw: {
-      'transition-delay': 'calc(var(--i, 0) * 70ms)',
-    }),
+    css('.bento > *').styles(
+      raw: {
+        'transition-delay': 'calc(var(--i, 0) * 70ms)',
+      },
+    ),
 
     // ============================================================
-    // Tablet+ : 2 columns
+    // Small tablet+ : 2 columns (kicks in at 600px so portrait
+    // tablets get the grid, not just landscape ones).
     // ============================================================
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
-      css('.bento').styles(raw: {
-        'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
-        'grid-auto-flow': 'row dense',
-      }),
-      css('.bento-tile--bio').styles(raw: {
-        'grid-column': 'span 2',
-      }),
-      css('.bento-tile--philosophy').styles(raw: {
-        'grid-column': 'span 2',
-      }),
+    css.media(MediaQuery.raw('(min-width: 600px)'), [
+      css('.bento').styles(
+        raw: {
+          'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
+          'grid-auto-flow': 'row dense',
+        },
+      ),
+      css('.bento-tile--bio').styles(
+        raw: {
+          'grid-column': 'span 2',
+        },
+      ),
+      css('.bento-tile--philosophy').styles(
+        raw: {
+          'grid-column': 'span 2',
+        },
+      ),
     ]),
 
     // ============================================================
-    // Desktop : 3 columns, bento layout
+    // Desktop : 3 columns, bento layout. Lowered from 1024 → 900
+    // so the asymmetric grid appears earlier and the tiles stop
+    // looking oversized on ~1024px laptops.
     // ============================================================
-    css('@media (min-width: ${AppSpacing.bpLg.toInt()}px)', [
-      css('.bento').styles(raw: {
-        'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
-        'grid-auto-rows': 'minmax(140px, auto)',
-      }),
-      css('.bento-tile--bio').styles(raw: {
-        'grid-column': 'span 2',
-        'grid-row': 'span 2',
-      }),
+    css.media(MediaQuery.raw('(min-width: 900px)'), [
+      css('.bento').styles(
+        raw: {
+          'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+          'grid-auto-rows': 'minmax(120px, auto)',
+        },
+      ),
+      css('.bento-tile--bio').styles(
+        raw: {
+          'grid-column': 'span 2',
+          'grid-row': 'span 2',
+        },
+      ),
       // Now + Location each take col 3, stacked.
       css('.bento-tile--now').styles(raw: {'grid-column': '3'}),
       css('.bento-tile--location').styles(raw: {'grid-column': '3'}),
 
       // Stat row (years + apps + languages) — three columns wide.
-      css('.bento-tile--stat, .bento-tile--langs').styles(raw: {
-        'grid-column': 'span 1',
-      }),
+      css('.bento-tile--stat, .bento-tile--langs').styles(
+        raw: {
+          'grid-column': 'span 1',
+        },
+      ),
 
       // Philosophy spans all three columns at the bottom.
-      css('.bento-tile--philosophy').styles(raw: {
-        'grid-column': 'span 3',
-      }),
+      css('.bento-tile--philosophy').styles(
+        raw: {
+          'grid-column': 'span 3',
+        },
+      ),
     ]),
   ];
 }
@@ -386,8 +397,7 @@ class _LocationTile extends StatelessComponent {
       children: [
         span(classes: 'bento-tile__eyebrow', [Component.text('// based in')]),
         span(classes: 'loc__city', [Component.text(city)]),
-        if (country.isNotEmpty)
-          span(classes: 'loc__country', [Component.text('$country · GMT+1')]),
+        if (country.isNotEmpty) span(classes: 'loc__country', [Component.text('$country · GMT+1')]),
       ],
     );
   }

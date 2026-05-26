@@ -90,7 +90,7 @@ class BackToTop extends StatelessComponent {
 
     // Tablet+: move it a touch further from the edge so it doesn't
     // crowd content next to the viewport corner.
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
+    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
       css('.back-to-top').styles(
         position: Position.fixed(bottom: 2.rem, right: 2.rem),
         width: 48.px,
@@ -100,7 +100,7 @@ class BackToTop extends StatelessComponent {
     ]),
 
     // Reduced motion: no transform, just opacity.
-    css('@media (prefers-reduced-motion: reduce)', [
+    css.media(MediaQuery.raw('(prefers-reduced-motion: reduce)'), [
       css('.back-to-top').styles(raw: {'transform': 'none'}),
       css('.back-to-top.is-visible').styles(raw: {'transform': 'none'}),
     ]),
