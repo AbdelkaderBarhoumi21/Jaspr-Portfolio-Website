@@ -16,15 +16,16 @@ import 'app_typography.dart';
 @css
 List<StyleRule> get globalStyles => [
   // -----------------------------------------------------------------
-  // 1. Font loading — Inter (body) + JetBrains Mono (code/skills).
-  //    `css.import(...)` emits an `@import url(...)` rule.
+  // 1. Font loading.
+  //
+  // The actual <link rel="stylesheet"> lives in main.server.dart so the
+  // browser discovers it during HTML parse instead of waiting for our
+  // stylesheet to download first (which is what `@import url(...)` would
+  // force). We just declare the family stacks here.
+  //
+  // `font-display: swap` is set in the Google Fonts URL so text paints
+  // immediately with the fallback while Inter/JetBrains Mono download.
   // -----------------------------------------------------------------
-  css.import(
-    'https://fonts.googleapis.com/css2'
-    '?family=Inter:wght@400;500;600;700'
-    '&family=JetBrains+Mono:wght@400;500;600'
-    '&display=swap',
-  ),
 
   // -----------------------------------------------------------------
   // 2. CSS custom properties — DARK palette (default) on :root.

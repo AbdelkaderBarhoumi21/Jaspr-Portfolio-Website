@@ -23,8 +23,23 @@ jaspr serve
 jaspr build
 ```
 
-If you've just deleted or renamed `@client` components, regenerate the
-Jaspr builder options first:
+### Production build with sitemap
+
+When deploying, pass your real domain so Jaspr generates `sitemap.xml`:
+
+```bash
+jaspr build --sitemap-domain https://abdelkaderbarhoumi.dev
+```
+
+Also remember to:
+
+- Drop `web/cv/Mobile_Abdelkader_Barhoumi_CV.pdf` for the Download CV button.
+- Drop `web/images/og-card.png` (1200×630) for social link previews.
+- Update `_siteUrl` in `lib/main.server.dart` if the domain isn't the one above.
+
+### After deleting or renaming `@client` components
+
+Regenerate the Jaspr builder options:
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs

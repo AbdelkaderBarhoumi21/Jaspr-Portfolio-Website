@@ -64,8 +64,13 @@ const String animationScripts = r'''
 
     // ---------------------------------------------------------------
     // 2. Typewriter — cycles words from data-words="A|B|C"
+    //
+    // Lazy-started: each .typewriter element runs the cycle only after
+    // it actually intersects the viewport. On a deep-linked load that
+    // lands the user halfway down the page, we don't burn timers on
+    // an off-screen hero. The observer self-unobserves once started.
     // ---------------------------------------------------------------
-    document.querySelectorAll('.typewriter').forEach((el) => {
+    const startTypewriter = (el) => {
       const raw = el.getAttribute('data-words') || '';
       const words = raw.split('|').map((w) => w.trim()).filter(Boolean);
       if (words.length === 0) return;
@@ -112,7 +117,25 @@ const String animationScripts = r'''
       };
 
       tick();
-    });
+    };
+
+    const typewriters = document.querySelectorAll('.typewriter');
+    if (typewriters.length > 0) {
+      if ('IntersectionObserver' in window) {
+        const twIO = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              twIO.unobserve(entry.target);
+              startTypewriter(entry.target);
+            }
+          }
+        }, { threshold: 0.25 });
+        typewriters.forEach((el) => twIO.observe(el));
+      } else {
+        // No IO support → start immediately.
+        typewriters.forEach(startTypewriter);
+      }
+    }
 
     // ---------------------------------------------------------------
     // 3. Scroll-driven UI: navbar blur, progress bar, back-to-top FAB.

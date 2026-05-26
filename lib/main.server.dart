@@ -83,21 +83,43 @@ void main() {
       head: const [
         // -----------------------------------------------------------------
         // Favicons
+        //
+        // When you have a higher-res icon set, replace these with:
+        //   favicon-32.png + favicon-16.png + apple-touch-icon-180.png
+        // and update the `sizes` attribute accordingly. The .ico fallback
+        // covers legacy browsers and the Windows tile.
         // -----------------------------------------------------------------
         link(rel: 'icon', href: 'favicon.ico', type: 'image/x-icon'),
         link(
           rel: 'apple-touch-icon',
           href: 'favicon.ico',
+          attributes: {'sizes': '180x180'},
         ),
 
         // -----------------------------------------------------------------
-        // Font preconnect — speeds up the @import in global_styles.dart
+        // Fonts — Inter (body) + JetBrains Mono (code).
+        //
+        // Loaded via <link rel="stylesheet"> directly in <head> so the
+        // browser discovers the font CSS during HTML parse, in parallel
+        // with our own stylesheet. Significantly faster LCP than the
+        // `@import url(...)` it replaces.
+        //
+        // The two preconnects warm up the TLS handshake to Google's CDN
+        // before the stylesheet href is fetched — saves ~80–200ms on
+        // first paint depending on the user's connection.
         // -----------------------------------------------------------------
         link(rel: 'preconnect', href: 'https://fonts.googleapis.com'),
         link(
           rel: 'preconnect',
           href: 'https://fonts.gstatic.com',
           attributes: {'crossorigin': ''},
+        ),
+        link(
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2'
+              '?family=Inter:wght@400;500;600;700'
+              '&family=JetBrains+Mono:wght@400;500;600'
+              '&display=swap',
         ),
 
         // -----------------------------------------------------------------
