@@ -44,10 +44,15 @@ class SkillsSection extends StatelessComponent {
 
   @css
   static List<StyleRule> get styles => [
+    // List view: one group card per row at every viewport size.
+    // The other sections (About bento, Contact tiles, Projects) use
+    // multi-column grids; Skills stays a single column so every chip
+    // row gets the full container width and tags don't crowd each
+    // other on desktop.
     css('.skills__grid').styles(
       display: Display.grid,
-      gap: Gap(row: AppSpacing.md.rem, column: AppSpacing.md.rem),
-      raw: {'grid-template-columns': '1fr'},
+      gap: Gap(row: AppSpacing.md.rem),
+      raw: {'grid-template-columns': 'minmax(0, 1fr)'},
     ),
 
     // Per-card internals.
@@ -81,13 +86,6 @@ class SkillsSection extends StatelessComponent {
       flexWrap: FlexWrap.wrap,
       gap: const Gap(row: Unit.rem(0.5), column: Unit.rem(0.5)),
     ),
-
-    // ----- Tablet+: two columns -----
-    css.media(MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'), [
-      css('.skills__grid').styles(raw: {
-        'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
-      }),
-    ]),
   ];
 }
 
