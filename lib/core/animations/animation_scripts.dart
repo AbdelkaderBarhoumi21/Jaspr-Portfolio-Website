@@ -483,6 +483,36 @@ const String animationScripts = r'''
     }
 
     // ---------------------------------------------------------------
+    // 5b. Magnetic CTAs — small elements lean toward the cursor.
+    //     For each `.magnetic` element we compute the cursor's offset
+    //     from the element's center and write it back as `--mx` / `--my`
+    //     (in px). The `.magnetic` CSS class translates the element by
+    //     those vars. Cleared on mouseleave so the element eases home.
+    //     STRENGTH is the fraction of the (dx, dy) we apply — small so
+    //     it feels like attraction, not jitter.
+    // ---------------------------------------------------------------
+    if (!prefersReduced) {
+      const magnets = document.querySelectorAll('.magnetic');
+      const STRENGTH = 0.30;
+      const MAX_PX = 14;     // hard clamp so big buttons don't drift far
+      magnets.forEach((el) => {
+        el.addEventListener('mousemove', (e) => {
+          const rect = el.getBoundingClientRect();
+          const dx = (e.clientX - (rect.left + rect.width / 2)) * STRENGTH;
+          const dy = (e.clientY - (rect.top + rect.height / 2)) * STRENGTH;
+          const cx = Math.max(-MAX_PX, Math.min(MAX_PX, dx));
+          const cy = Math.max(-MAX_PX, Math.min(MAX_PX, dy));
+          el.style.setProperty('--mx', cx.toFixed(1) + 'px');
+          el.style.setProperty('--my', cy.toFixed(1) + 'px');
+        });
+        el.addEventListener('mouseleave', () => {
+          el.style.removeProperty('--mx');
+          el.style.removeProperty('--my');
+        });
+      });
+    }
+
+    // ---------------------------------------------------------------
     // 6. Custom cursor — dot follows pointer; ring lags
     // ---------------------------------------------------------------
     const dot = document.querySelector('[data-cursor-dot]');

@@ -134,7 +134,59 @@ List<StyleRule> get globalStyles => [
   ),
 
   // -----------------------------------------------------------------
-  // 6. Reduced-motion safety net.
+  // 6. Film-grain texture.
+  //
+  // A fixed full-viewport pseudo-element painted with an SVG
+  // fractal-noise pattern at 4% opacity. It sits BEHIND every
+  // section (z-index 0) but ON TOP of the body background, giving
+  // the dark surface a subtle "developer wallpaper" feel without
+  // adding a single bitmap request.
+  //
+  // pointer-events: none so it never blocks clicks.
+  // -----------------------------------------------------------------
+  css('body::before').styles(raw: {
+    'content': '""',
+    'position': 'fixed',
+    'inset': '0',
+    'z-index': '0',
+    'pointer-events': 'none',
+    'opacity': '0.04',
+    // Inline SVG → no extra HTTP request, no asset to track.
+    'background-image':
+        'url("data:image/svg+xml;utf8,'
+        '<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22>'
+        '<filter id=%22n%22>'
+        '<feTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%222%22 stitchTiles=%22stitch%22/>'
+        '<feColorMatrix values=%221 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 0.6 0%22/>'
+        '</filter>'
+        '<rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/>'
+        '</svg>")',
+    'background-size': '200px 200px',
+  }),
+
+  // -----------------------------------------------------------------
+  // 7. Focus styles — accessibility.
+  //
+  // Use `:focus-visible` so mouse clicks don't get a ring but keyboard
+  // navigation does. The ring uses the brand violet and matches the
+  // radius of the focused control (via inheritance from its `border-
+  // radius`). Sits 2px outside the control so it never overlaps content.
+  // -----------------------------------------------------------------
+  css(':focus').styles(raw: {'outline': 'none'}),
+  css(':focus-visible').styles(raw: {
+    'outline': '2px solid var(--primary)',
+    'outline-offset': '3px',
+    'border-radius': 'inherit',
+  }),
+  // Inputs get a soft ring + matching border, no offset (looks cleaner
+  // inside an input row).
+  css('input:focus-visible, textarea:focus-visible').styles(raw: {
+    'outline': 'none',
+    'box-shadow': '0 0 0 2px rgba(108, 99, 255, 0.45)',
+  }),
+
+  // -----------------------------------------------------------------
+  // 8. Reduced-motion safety net.
   //    Animation files also honor this — belt + suspenders.
   // -----------------------------------------------------------------
   css('@media (prefers-reduced-motion: reduce)', [

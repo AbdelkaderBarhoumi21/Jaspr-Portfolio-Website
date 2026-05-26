@@ -269,15 +269,13 @@ class CommandPalette extends StatelessComponent {
     ]);
   }
 
-  /// Minimal inline-SVG factory.
+  /// Minimal inline-SVG factory using Jaspr's typed `svg()` / `path()`.
   /// `stroke: true` → outline icon (Lucide-style).
   /// `stroke: false` → filled icon (Simple Icons-style brand marks).
   static Component _iconSvg(String d, {bool stroke = true}) {
-    return Component.element(
-      tag: 'svg',
+    return svg(
+      viewBox: '0 0 24 24',
       attributes: {
-        'xmlns': 'http://www.w3.org/2000/svg',
-        'viewBox': '0 0 24 24',
         'fill': stroke ? 'none' : 'currentColor',
         if (stroke) 'stroke': 'currentColor',
         if (stroke) 'stroke-width': '2',
@@ -285,13 +283,7 @@ class CommandPalette extends StatelessComponent {
         if (stroke) 'stroke-linejoin': 'round',
         'aria-hidden': 'true',
       },
-      children: [
-        Component.element(
-          tag: 'path',
-          attributes: {'d': d},
-          children: [],
-        ),
-      ],
+      [path(d: d, const [])],
     );
   }
 

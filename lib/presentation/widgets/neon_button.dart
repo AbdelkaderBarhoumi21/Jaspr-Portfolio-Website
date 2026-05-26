@@ -35,7 +35,7 @@ class NeonButton extends StatelessComponent {
 
   @override
   Component build(BuildContext context) {
-    final classes = StringBuffer('neon-btn glow-hover');
+    final classes = StringBuffer('neon-btn glow-hover magnetic');
     classes.write(variant == NeonButtonVariant.primary
         ? ' neon-btn--primary glow-pulse'
         : ' neon-btn--secondary');

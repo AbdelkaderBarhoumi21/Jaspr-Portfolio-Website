@@ -26,14 +26,15 @@ class BackToTop extends StatelessComponent {
         'data-back-to-top': '',
         'aria-label': 'Back to top',
       },
-      classes: 'back-to-top glow-hover',
+      classes: 'back-to-top glow-hover magnetic',
       [
         // Inline SVG arrow-up — uses currentColor so it inherits .back-to-top.
-        Component.element(
-          tag: 'svg',
+        // `fill`/`stroke` colors are set on the parent <a> via CSS; the
+        // typed `path()` helper only takes Color, so we pass the
+        // stroke/fill/linecap attrs through `attributes:`.
+        svg(
+          viewBox: '0 0 24 24',
           attributes: const {
-            'xmlns': 'http://www.w3.org/2000/svg',
-            'viewBox': '0 0 24 24',
             'fill': 'none',
             'stroke': 'currentColor',
             'stroke-width': '2.2',
@@ -41,17 +42,9 @@ class BackToTop extends StatelessComponent {
             'stroke-linejoin': 'round',
             'aria-hidden': 'true',
           },
-          children: [
-            Component.element(
-              tag: 'path',
-              attributes: const {'d': 'M12 19V5'},
-              children: [],
-            ),
-            Component.element(
-              tag: 'path',
-              attributes: const {'d': 'M5 12l7-7 7 7'},
-              children: [],
-            ),
+          const [
+            path(d: 'M12 19V5', []),
+            path(d: 'M5 12l7-7 7 7', []),
           ],
         ),
       ],

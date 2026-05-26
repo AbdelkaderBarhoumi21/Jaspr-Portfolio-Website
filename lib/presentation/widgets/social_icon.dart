@@ -24,7 +24,7 @@ class SocialIcon extends StatelessComponent {
         if (isExternal) 'rel': 'noopener noreferrer',
         'aria-label': link.label,
       },
-      classes: 'social-icon glow-hover',
+      classes: 'social-icon glow-hover magnetic',
       [
         // The inline SVG sits inside an icon wrapper that grid-centers
         // it. Grid `place-items: center` is the most reliable way to

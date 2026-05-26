@@ -159,6 +159,22 @@ List<StyleRule> get animationStyles => [
   }),
 
   // ===================================================================
+  // 8b. Magnetic — small elements lean toward the cursor on hover.
+  //     JS writes --mx / --my (in px) from mousemove; mouseleave clears.
+  //     We compose with any existing transform via translate3d(), which
+  //     is GPU-cheap and stacks predictably (no fight with .glow-hover).
+  // ===================================================================
+  css('.magnetic').styles(raw: {
+    'transform': 'translate3d(var(--mx, 0px), var(--my, 0px), 0)',
+    'transition': 'transform 240ms var(--ease-out)',
+    'will-change': 'transform',
+  }),
+  // Pointer-coarse devices (phones, tablets) skip the effect entirely.
+  css('@media (pointer: coarse)', [
+    css('.magnetic').styles(raw: {'transform': 'none'}),
+  ]),
+
+  // ===================================================================
   // 9. Glow on hover — used by CTAs and skill badges.
   // ===================================================================
   css('.glow-hover').styles(raw: {
@@ -199,6 +215,9 @@ List<StyleRule> get animationStyles => [
       'border-right': '0',
     }),
     css('.tilt').styles(raw: {
+      'transform': 'none',
+    }),
+    css('.magnetic').styles(raw: {
       'transform': 'none',
     }),
     css('.glow-hover:hover').styles(raw: {
