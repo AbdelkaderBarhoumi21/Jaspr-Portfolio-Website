@@ -51,6 +51,30 @@ const _ogImage = 'images/og-card.png'; // 1200×630 recommended; drop in web/ima
 const _baseHref = String.fromEnvironment('BASE_HREF', defaultValue: '/');
 
 // ---------------------------------------------------------------------------
+// Favicon — inline-SVG data URL.
+//
+// Embedded directly in the HTML head so it never 404s, never caches stale,
+// never depends on the build output copying a binary asset over. Renders
+// crisp at any size (tabs, bookmarks, taskbar).
+//
+// Composition: violet→cyan gradient pill + white "AB" monogram (same
+// glyphs we use in the navbar brand mark).
+// ---------------------------------------------------------------------------
+const _faviconDataUri =
+    'data:image/svg+xml;utf8,'
+    '<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22>'
+    '<defs>'
+    '<linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22>'
+    '<stop offset=%220%22 stop-color=%22%236C63FF%22/>'
+    '<stop offset=%221%22 stop-color=%22%2300D9FF%22/>'
+    '</linearGradient>'
+    '</defs>'
+    '<rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22url(%23g)%22/>'
+    '<path fill=%22white%22 d=%22M6.5 22 11 9h2.4l4.5 13h-2.4l-1.05-3.2H9.95L8.9 22zm4-5.1h3l-1.5-4.6z%22/>'
+    '<path fill=%22white%22 d=%22M19.2 22V9h4.6c1.5 0 2.6.34 3.3 1.02.7.67 1.05 1.6 1.05 2.78 0 .77-.17 1.42-.5 1.95a2.7 2.7 0 0 1-1.42 1.12c.78.21 1.4.6 1.85 1.16.46.56.69 1.27.69 2.13 0 1.21-.4 2.17-1.2 2.86-.8.7-1.92 1.05-3.37 1.05zm2.4-7.7h2.05c.65 0 1.13-.15 1.45-.45.32-.3.48-.7.48-1.21 0-.52-.16-.93-.48-1.22-.32-.3-.8-.45-1.45-.45h-2.05zm0 5.7h2.36c.71 0 1.24-.16 1.6-.5.36-.32.54-.78.54-1.36 0-.59-.18-1.05-.55-1.38-.36-.33-.9-.5-1.6-.5h-2.35z%22/>'
+    '</svg>';
+
+// ---------------------------------------------------------------------------
 // Pre-hydration theme script.
 //
 // Runs synchronously (NOT deferred) before any pixels are painted, so a
@@ -103,23 +127,22 @@ void main() {
       },
       head: const [
         // -----------------------------------------------------------------
-        // Favicons
+        // Favicons — inline SVG data URL.
         //
-        // Single source of truth: images/logo_site_1.png. The
-        // `sizes="any"` hint tells the browser this raster icon scales
-        // to any tab/bookmark size, overriding the auto-fetched
-        // /favicon.ico (which no longer exists in our build output).
+        // Embedded directly in <head>, so the browser doesn't have to
+        // make a separate request for an asset that could 404, cache
+        // stale, or take time to load. SVG also scales sharp at every
+        // tab/bookmark/PWA size. Apple Touch Icon points at the same
+        // data URL — iOS handles it correctly since Safari 13.
         // -----------------------------------------------------------------
         link(
           rel: 'icon',
-          href: 'images/logo_site_1.png',
-          type: 'image/png',
-          attributes: {'sizes': 'any'},
+          href: _faviconDataUri,
+          type: 'image/svg+xml',
         ),
         link(
           rel: 'apple-touch-icon',
-          href: 'images/logo_site_1.png',
-          attributes: {'sizes': '180x180'},
+          href: _faviconDataUri,
         ),
 
         // -----------------------------------------------------------------

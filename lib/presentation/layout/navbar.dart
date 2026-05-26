@@ -26,17 +26,38 @@ class Navbar extends StatelessComponent {
       classes: 'navbar',
       [
         div(classes: 'navbar__inner', [
-          // Brand mark — links back to #home. The <img> path is relative
-          // so it works under both the local dev server and the GitHub
-          // Pages subpath (Document(base:...) rewrites it).
+          // Brand mark — links back to #home.
+          //
+          // Inline SVG monogram instead of an <img> file so it can never
+          // 404 / load slow / break — and so it scales sharp at any DPI.
+          // The pill background uses the brand gradient defined in :root.
           a(
             href: AppAnchors.hash(AppAnchors.home),
             classes: 'navbar__brand',
             [
-              img(
-                src: 'images/logo_site_1.png',
-                alt: '${ProfileData.firstName} logo',
-                classes: 'navbar__brand-logo',
+              span(
+                classes: 'navbar__brand-mark',
+                attributes: const {'aria-hidden': 'true'},
+                [
+                  svg(
+                    viewBox: '0 0 32 32',
+                    attributes: const {'aria-hidden': 'true'},
+                    [
+                      // Stylized "AB" monogram (two paths so the letters
+                      // can sit on a single visual baseline).
+                      const path(
+                        d: 'M6.5 22 11 9h2.4l4.5 13h-2.4l-1.05-3.2H9.95L8.9 22zm4-5.1h3l-1.5-4.6z',
+                        attributes: {'fill': 'white'},
+                        [],
+                      ),
+                      const path(
+                        d: 'M19.2 22V9h4.6c1.5 0 2.6.34 3.3 1.02.7.67 1.05 1.6 1.05 2.78 0 .77-.17 1.42-.5 1.95a2.7 2.7 0 0 1-1.42 1.12c.78.21 1.4.6 1.85 1.16.46.56.69 1.27.69 2.13 0 1.21-.4 2.17-1.2 2.86-.8.7-1.92 1.05-3.37 1.05zm2.4-7.7h2.05c.65 0 1.13-.15 1.45-.45.32-.3.48-.7.48-1.21 0-.52-.16-.93-.48-1.22-.32-.3-.8-.45-1.45-.45h-2.05zm0 5.7h2.36c.71 0 1.24-.16 1.6-.5.36-.32.54-.78.54-1.36 0-.59-.18-1.05-.55-1.38-.36-.33-.9-.5-1.6-.5h-2.35z',
+                        attributes: {'fill': 'white'},
+                        [],
+                      ),
+                    ],
+                  ),
+                ],
               ),
               span(classes: 'navbar__brand-name', [
                 Component.text(ProfileData.firstName),
@@ -125,16 +146,23 @@ class Navbar extends StatelessComponent {
       fontWeight: AppTypography.semibold,
       textDecoration: const TextDecoration(line: TextDecorationLine.none),
     ),
-    // Logo PNG (sits left of the brand name). Square 32px slot so the
-    // image scales cleanly without distorting at any breakpoint.
-    css('.navbar__brand-logo').styles(
-      display: Display.block,
+    // Inline-SVG brand mark — gradient pill with the AB monogram.
+    css('.navbar__brand-mark').styles(
+      display: Display.inlineFlex,
       width: 32.px,
       height: 32.px,
+      justifyContent: JustifyContent.center,
+      alignItems: AlignItems.center,
       raw: {
-        'object-fit': 'contain',
+        'background': 'var(--brand-gradient)',
         'border-radius': '${AppSpacing.radiusSm}px',
+        'box-shadow': '0 4px 12px -4px rgba(108, 99, 255, 0.55)',
       },
+    ),
+    css('.navbar__brand-mark svg').styles(
+      display: Display.block,
+      width: 22.px,
+      height: 22.px,
     ),
     css('.navbar__brand-name').styles(
       fontFamily: const FontFamily.list([
