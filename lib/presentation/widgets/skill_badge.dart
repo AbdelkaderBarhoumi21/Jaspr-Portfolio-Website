@@ -56,9 +56,19 @@ class SkillBadge extends StatelessComponent {
         'background': 'var(--glass-bg)',
         'border': '1px solid var(--glass-border)',
         'border-radius': '${AppSpacing.radiusSm}px',
+        // Stay on one line by default — but never let a single chip be
+        // wider than its parent (otherwise long tags like "Firebase
+        // (FCM, Storage, Cloud Functions)" overflow project cards).
         'white-space': 'nowrap',
+        'max-width': '100%',
       },
     ),
+    // The label can break onto a second line if the badge itself is
+    // clamped to the container width.
+    css('.skill-badge__label').styles(raw: {
+      'overflow': 'hidden',
+      'text-overflow': 'ellipsis',
+    }),
     // Icon slot — tinted cyan so the brand mark pops a touch against
     // the chip text, but stays subtle.
     css('.skill-badge__icon').styles(

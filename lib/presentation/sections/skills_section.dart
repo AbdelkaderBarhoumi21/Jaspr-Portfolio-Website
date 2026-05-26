@@ -35,8 +35,7 @@ class SkillsSection extends StatelessComponent {
         ),
 
         div(classes: 'skills__grid stagger', [
-          for (final (i, group) in skillGroups.indexed)
-            _SkillGroupCard(group: group, staggerIndex: i),
+          for (final (i, group) in skillGroups.indexed) _SkillGroupCard(group: group, staggerIndex: i),
         ]),
       ],
     );

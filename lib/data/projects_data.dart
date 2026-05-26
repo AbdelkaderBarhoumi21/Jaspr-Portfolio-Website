@@ -14,9 +14,14 @@ const List<Project> projects = [
         'with JWT auth, role management, courier tracking via Google Maps, and a '
         'Qt/QML desktop dashboard.',
     tags: [
-      'Flutter', 'Laravel', 'JWT',
-      'PostgreSQL', 'Google Maps',
-      'Firebase', 'Qt/QML', 'Docker',
+      'Flutter',
+      'Laravel',
+      'JWT',
+      'PostgreSQL',
+      'Google Maps',
+      'Firebase',
+      'Qt/QML',
+      'Docker',
     ],
   ),
   Project(
@@ -26,9 +31,13 @@ const List<Project> projects = [
         'search, and blocking — backed by a Rust (Axum) WebSocket server with JWT '
         'auth and MongoDB persistence.',
     tags: [
-      'Flutter', 'Riverpod',
-      'Rust (Axum)', 'WebSockets',
-      'JWT', 'MongoDB', 'Firebase',
+      'Flutter',
+      'Riverpod',
+      'Rust (Axum)',
+      'WebSockets',
+      'JWT',
+      'MongoDB',
+      'Firebase',
     ],
   ),
   Project(
@@ -40,7 +49,9 @@ const List<Project> projects = [
     tags: [
       'Flutter', 'GetX', 'Clean Architecture',
       'Rust (Axum)', 'Gemini API', 'Streaming',
-      'Firebase (FCM, Storage, Cloud Functions)',
+      // One Firebase product per chip — keeping the long parenthetical
+      // would overflow the card on narrow viewports.
+      'Firebase',
       'CI/CD', 'Docker',
     ],
   ),
