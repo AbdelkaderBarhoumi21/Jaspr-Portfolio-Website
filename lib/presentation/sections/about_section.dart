@@ -432,7 +432,8 @@ class _LanguagesTile extends StatelessComponent {
         span(classes: 'bento-tile__eyebrow', [Component.text('// languages')]),
         div(classes: 'langs__row', [
           for (final lang in ProfileData.languages)
-            SkillBadge(label: lang),
+            // Languages are spoken/written, not tech — no auto-icon lookup.
+            SkillBadge(label: lang, showIcon: false),
         ]),
       ],
     );
