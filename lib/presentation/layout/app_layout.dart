@@ -17,6 +17,7 @@ import 'package:jaspr/jaspr.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../widgets/back_to_top.dart';
+import '../widgets/command_palette.dart';
 import '../widgets/scroll_progress.dart';
 import 'footer.dart';
 import 'navbar.dart';
@@ -38,6 +39,8 @@ class AppLayout extends StatelessComponent {
       const Footer(),
       // Floating back-to-top FAB — JS toggles .is-visible past ~600px.
       const BackToTop(),
+      // Command palette overlay — hidden until Ctrl/Cmd+K (or '/').
+      const CommandPalette(),
       // Custom cursor — visible only on fine pointers; animation_scripts.dart
       // attaches mousemove/raf to update transforms.
       div(
@@ -63,11 +66,11 @@ class AppLayout extends StatelessComponent {
       flexDirection: FlexDirection.column,
     ),
     css('.app__main').styles(
-      raw: {'flex': '1 1 auto'},
       // Top padding so anchor scrolls (and the first hero) clear the
       // fixed-position navbar. scroll-padding-top in global_styles.dart
       // handles the anchor offset, this just gives breathing room.
       padding: Padding.only(top: AppSpacing.navbarHeight.px),
+      raw: {'flex': '1 1 auto'},
     ),
 
     // ----- Custom cursor -----

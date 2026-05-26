@@ -198,6 +198,216 @@ const String animationScripts = r'''
     });
 
     // ---------------------------------------------------------------
+    // 3c. Command palette — Ctrl/Cmd+K (or '/') opens a search modal.
+    //     The DOM is pre-rendered in <CommandPalette>; we only handle
+    //     show/hide, filtering, arrow-key navigation, and dispatch.
+    // ---------------------------------------------------------------
+    {
+      const root  = document.querySelector('[data-cmdk-root]');
+      if (root) {
+        const input    = root.querySelector('[data-cmdk-input]');
+        const list     = root.querySelector('[data-cmdk-list]');
+        const empty    = root.querySelector('[data-cmdk-empty]');
+        const backdrop = root.querySelector('[data-cmdk-backdrop]');
+        const items    = Array.from(root.querySelectorAll('[data-cmdk-item]'));
+        let activeIdx  = 0;
+        let lastFocus  = null;
+
+        const visibleItems = () =>
+          items.filter((el) => !el.classList.contains('is-hidden'));
+
+        const setActive = (idx) => {
+          const vis = visibleItems();
+          if (vis.length === 0) return;
+          activeIdx = ((idx % vis.length) + vis.length) % vis.length;
+          items.forEach((el) => el.classList.remove('is-active'));
+          const target = vis[activeIdx];
+          target.classList.add('is-active');
+          // Keep the active item in view inside the scrolling list.
+          if (typeof target.scrollIntoView === 'function') {
+            target.scrollIntoView({ block: 'nearest' });
+          }
+        };
+
+        const applyFilter = () => {
+          const q = (input.value || '').trim().toLowerCase();
+          let firstShown = -1;
+          items.forEach((el, i) => {
+            const hay = el.getAttribute('data-keywords') || '';
+            const match = q.length === 0 || hay.indexOf(q) !== -1;
+            el.classList.toggle('is-hidden', !match);
+            if (match && firstShown === -1) firstShown = i;
+          });
+          // Hide group labels whose group has no visible items.
+          let lastLabel = null;
+          let labelHasVisible = false;
+          const flushLabel = () => {
+            if (lastLabel) {
+              lastLabel.classList.toggle('is-hidden', !labelHasVisible);
+            }
+          };
+          Array.from(list.children).forEach((node) => {
+            if (node.classList.contains('cmdk__group-label')) {
+              flushLabel();
+              lastLabel = node;
+              labelHasVisible = false;
+            } else if (node.classList.contains('cmdk__item')) {
+              if (!node.classList.contains('is-hidden')) labelHasVisible = true;
+            }
+          });
+          flushLabel();
+          // Empty state.
+          const vis = visibleItems();
+          if (empty) empty.classList.toggle('is-visible', vis.length === 0);
+          activeIdx = 0;
+          setActive(0);
+        };
+
+        const open = () => {
+          lastFocus = document.activeElement;
+          root.classList.add('is-open');
+          root.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          if (input) {
+            input.value = '';
+            applyFilter();
+            setTimeout(() => input.focus(), 30);
+          }
+        };
+
+        const close = () => {
+          root.classList.remove('is-open');
+          root.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          if (lastFocus && typeof lastFocus.focus === 'function') {
+            lastFocus.focus();
+          }
+        };
+
+        const isOpen = () => root.classList.contains('is-open');
+
+        const activate = (el) => {
+          if (!el) return;
+          const action = el.getAttribute('data-action');
+          const target = el.getAttribute('data-target');
+          if (!action || !target) return;
+
+          if (action === 'nav') {
+            close();
+            // Update hash so anchor scroll happens via global smooth-scroll.
+            // Use replace so we don't pile up history entries.
+            const el2 = document.querySelector(target);
+            if (el2 && typeof el2.scrollIntoView === 'function') {
+              el2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              history.replaceState(null, '', target);
+            } else {
+              window.location.hash = target;
+            }
+          } else if (action === 'open') {
+            close();
+            // Same-origin paths (e.g. /cv.pdf) open in same tab so the
+            // browser's download handler runs; external URLs new tab.
+            const isExternal = /^https?:/i.test(target);
+            if (isExternal) {
+              window.open(target, '_blank', 'noopener,noreferrer');
+            } else {
+              window.location.assign(target);
+            }
+          } else if (action === 'copy') {
+            const flash = el.querySelector('.cmdk__item-kbd');
+            const originalGlyph = flash ? flash.textContent : '';
+            const ok = () => {
+              if (flash) {
+                flash.textContent = '✓';
+                setTimeout(() => { flash.textContent = originalGlyph; }, 900);
+              }
+              setTimeout(close, 350);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(target).then(ok, ok);
+            } else {
+              // Legacy fallback.
+              const ta = document.createElement('textarea');
+              ta.value = target;
+              ta.setAttribute('readonly', '');
+              ta.style.position = 'absolute';
+              ta.style.left = '-9999px';
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand('copy'); } catch (_) {}
+              document.body.removeChild(ta);
+              ok();
+            }
+          }
+        };
+
+        // ---- Global open shortcut ----
+        document.addEventListener('keydown', (e) => {
+          const cmdK =
+            (e.ctrlKey || e.metaKey) && e.key && e.key.toLowerCase() === 'k';
+          const slash =
+            e.key === '/' &&
+            !e.ctrlKey && !e.metaKey && !e.altKey &&
+            !(e.target instanceof HTMLInputElement) &&
+            !(e.target instanceof HTMLTextAreaElement) &&
+            !(e.target && e.target.isContentEditable);
+          if (cmdK || slash) {
+            e.preventDefault();
+            isOpen() ? close() : open();
+          } else if (e.key === 'Escape' && isOpen()) {
+            e.preventDefault();
+            close();
+          }
+        });
+
+        // ---- Backdrop click closes ----
+        if (backdrop) backdrop.addEventListener('click', close);
+
+        // ---- Input typing filters; arrow keys/Enter navigate ----
+        if (input) {
+          input.addEventListener('input', applyFilter);
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+              e.preventDefault();
+              setActive(activeIdx + 1);
+            } else if (e.key === 'ArrowUp') {
+              e.preventDefault();
+              setActive(activeIdx - 1);
+            } else if (e.key === 'Enter') {
+              e.preventDefault();
+              const vis = visibleItems();
+              if (vis[activeIdx]) activate(vis[activeIdx]);
+            }
+          });
+        }
+
+        // ---- Click an item to activate ----
+        items.forEach((el) => {
+          el.addEventListener('click', () => activate(el));
+          el.addEventListener('mouseenter', () => {
+            const vis = visibleItems();
+            const idx = vis.indexOf(el);
+            if (idx >= 0) setActive(idx);
+          });
+        });
+
+        // Expose a global hook the navbar hint button can call.
+        window.__openCmdK = open;
+
+        // Bind any [data-open-cmdk] trigger (e.g. the ⌘K chip in the navbar).
+        document.querySelectorAll('[data-open-cmdk]').forEach((el) => {
+          el.addEventListener('click', (e) => {
+            e.preventDefault();
+            open();
+          });
+        });
+
+        // Initial render — sets the first item as active.
+        applyFilter();
+      }
+    }
+
+    // ---------------------------------------------------------------
     // 4. ScrollSpy — highlight the active nav link
     // ---------------------------------------------------------------
     const navLinks = Array.from(

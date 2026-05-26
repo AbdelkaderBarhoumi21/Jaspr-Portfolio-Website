@@ -50,8 +50,26 @@ class Navbar extends StatelessComponent {
               ]),
           ]),
 
-          // Mobile-only hamburger (@client island).
-          const MobileNavToggle(),
+          // Right-side actions: Ctrl+K hint (desktop) + mobile hamburger.
+          div(classes: 'navbar__actions', [
+            // Discoverability chip for the command palette. The JS in
+            // animation_scripts.dart exposes window.__openCmdK so this
+            // button can trigger the same flow as the keyboard shortcut.
+            button(
+              type: ButtonType.button,
+              attributes: const {
+                'data-open-cmdk': '',
+                'aria-label': 'Open command palette',
+              },
+              classes: 'cmdk-hint mono',
+              [
+                span([Component.text('⌘')]),
+                span([Component.text('K')]),
+              ],
+            ),
+            // Mobile-only hamburger (@client island).
+            const MobileNavToggle(),
+          ]),
         ]),
       ],
     );
@@ -123,6 +141,44 @@ class Navbar extends StatelessComponent {
       ]),
       fontSize: AppTypography.smallSize,
       letterSpacing: const Unit.em(0.05),
+    ),
+
+    // ----- Right-side actions cluster -----
+    css('.navbar__actions').styles(
+      display: Display.flex,
+      alignItems: AlignItems.center,
+      gap: Gap(column: AppSpacing.sm.rem),
+    ),
+
+    // ----- ⌘K hint button (desktop only) -----
+    css('.cmdk-hint').styles(
+      display: Display.none, // shown via the desktop media query below
+      padding: Padding.symmetric(horizontal: 0.55.rem, vertical: 0.3.rem),
+      cursor: Cursor.pointer,
+      alignItems: AlignItems.center,
+      gap: Gap(column: 0.2.rem),
+      color: AppColors.textSecondary,
+      fontFamily: const FontFamily.list([
+        AppTypography.fontMono,
+        FontFamilies.monospace,
+      ]),
+      fontSize: AppTypography.eyebrowSize,
+      raw: {
+        'background': 'rgba(255, 255, 255, 0.04)',
+        'border': '1px solid var(--glass-border)',
+        'border-radius': '6px',
+        'transition':
+            'color 180ms var(--ease-out), '
+            'background 180ms var(--ease-out), '
+            'border-color 180ms var(--ease-out)',
+      },
+    ),
+    css('.cmdk-hint:hover').styles(
+      color: AppColors.textPrimary,
+      raw: {
+        'background': 'rgba(108, 99, 255, 0.12)',
+        'border-color': 'rgba(108, 99, 255, 0.35)',
+      },
     ),
 
     // ----- Desktop links -----
@@ -240,6 +296,7 @@ class Navbar extends StatelessComponent {
     // ----- Responsive: show links on desktop, hide hamburger -----
     css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
       css('.navbar__links').styles(display: Display.flex),
+      css('.cmdk-hint').styles(display: Display.inlineFlex),
       css('.nav-toggle').styles(display: Display.none),
       css('.mobile-menu').styles(display: Display.none),
       css('.navbar__inner').styles(
