@@ -96,18 +96,20 @@ class ContactSection extends StatelessComponent {
   static List<StyleRule> get styles => [
     // ----- Intro line -----
     css('.contact__intro').styles(
-      maxWidth: 640.px,
-      margin: Margin.only(bottom: AppSpacing.xl.rem),
+      maxWidth: 580.px,
+      margin: Margin.only(bottom: AppSpacing.lg.rem),
       color: AppColors.textSecondary,
-      fontSize: 1.1.rem,
+      fontSize: 1.0.rem,
       lineHeight: const Unit.expression('${AppTypography.lineHeightBody}'),
     ),
 
     // ----- Tile grid -----
+    // Mobile: single column, tight gaps.
+    // bpMd+ : 3 columns side-by-side.
     css('.contact__grid').styles(
       display: Display.grid,
-      margin: Margin.only(bottom: AppSpacing.xl.rem),
-      gap: Gap(row: AppSpacing.md.rem, column: AppSpacing.md.rem),
+      margin: Margin.only(bottom: AppSpacing.lg.rem),
+      gap: const Gap(row: Unit.rem(0.6), column: Unit.rem(0.75)),
       raw: {'grid-template-columns': '1fr'},
     ),
     css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
@@ -117,15 +119,17 @@ class ContactSection extends StatelessComponent {
     ]),
 
     // ----- Tile (the clickable card) -----
+    // Horizontal layout: [icon] [text-col] [arrow]
+    // Compact vertical padding so the row is ~64px tall on mobile.
     css('.channel-tile').styles(
       display: Display.flex,
-      padding: Padding.all(AppSpacing.lg.rem),
-      flexDirection: FlexDirection.column,
-      gap: Gap(row: AppSpacing.sm.rem),
+      padding: Padding.symmetric(horizontal: AppSpacing.md.rem, vertical: 0.75.rem),
+      alignItems: AlignItems.center,
+      gap: Gap(column: AppSpacing.md.rem),
       color: AppColors.textPrimary,
       textDecoration: const TextDecoration(line: TextDecorationLine.none),
       raw: {
-        'border-radius': '${AppSpacing.radiusLg}px',
+        'border-radius': '${AppSpacing.radiusMd}px',
         'transition':
             'transform 220ms var(--ease-out), '
             'box-shadow 220ms var(--ease-out), '
@@ -133,27 +137,43 @@ class ContactSection extends StatelessComponent {
       },
     ),
     css('.channel-tile:hover').styles(raw: {
-      'transform': 'translateY(-3px)',
-      'box-shadow': '0 14px 32px -10px rgba(108, 99, 255, 0.45)',
+      'transform': 'translateY(-2px)',
+      'box-shadow': '0 10px 24px -10px rgba(108, 99, 255, 0.45)',
       'border-color': 'rgba(108, 99, 255, 0.40)',
     }),
+    css('.channel-tile:hover .channel-tile__arrow').styles(
+      color: AppColors.textPrimary,
+      raw: {'transform': 'translateX(2px)'},
+    ),
 
-    // Icon sits in a small gradient halo at the top-left of the tile.
+    // Icon halo — smaller (36px) than before, sits on the left.
     css('.channel-tile__icon').styles(
       display: Display.inlineFlex,
-      width: 44.px,
-      height: 44.px,
+      width: 36.px,
+      height: 36.px,
       justifyContent: JustifyContent.center,
       alignItems: AlignItems.center,
       color: AppColors.secondary,
       raw: {
         'background': 'rgba(0, 217, 255, 0.10)',
         'border': '1px solid rgba(0, 217, 255, 0.22)',
-        'border-radius': '${AppSpacing.radiusMd}px',
+        'border-radius': '${AppSpacing.radiusSm}px',
+        'flex': '0 0 36px',
       },
     ),
-    css('.channel-tile__icon svg').styles(width: 20.px, height: 20.px),
+    css('.channel-tile__icon svg').styles(
+      display: Display.block,
+      width: 16.px,
+      height: 16.px,
+    ),
 
+    // Text column — label tiny on top, value bigger below.
+    css('.channel-tile__text').styles(
+      display: Display.flex,
+      flexDirection: FlexDirection.column,
+      gap: Gap(row: 0.05.rem),
+      raw: {'flex': '1 1 auto', 'min-width': '0'},
+    ),
     css('.channel-tile__label').styles(
       color: AppColors.textMuted,
       fontFamily: const FontFamily.list([
@@ -166,9 +186,29 @@ class ContactSection extends StatelessComponent {
     ),
     css('.channel-tile__value').styles(
       color: AppColors.textPrimary,
-      fontSize: 1.05.rem,
+      fontSize: 0.92.rem,
       fontWeight: AppTypography.semibold,
-      raw: {'word-break': 'break-word'},
+      raw: {
+        'overflow': 'hidden',
+        'text-overflow': 'ellipsis',
+        'white-space': 'nowrap',
+      },
+    ),
+
+    // Trailing arrow glyph — muted, leans right on hover.
+    css('.channel-tile__arrow').styles(
+      color: AppColors.textMuted,
+      fontFamily: const FontFamily.list([
+        AppTypography.fontMono,
+        FontFamilies.monospace,
+      ]),
+      fontSize: 1.0.rem,
+      raw: {
+        'transition':
+            'color 200ms var(--ease-out), '
+            'transform 200ms var(--ease-out)',
+        'flex': '0 0 auto',
+      },
     ),
 
     // ----- CTA wrapper -----
@@ -211,11 +251,21 @@ class _ChannelTile extends StatelessComponent {
               : null,
           classes: 'channel-tile glass',
           [
+            // Icon halo (left).
             span(classes: 'channel-tile__icon', [RawText(link.iconSvg)]),
-            span(classes: 'channel-tile__label', [
-              Component.text(link.label),
+            // Text column (right): tiny eyebrow label + handle/value.
+            div(classes: 'channel-tile__text', [
+              span(classes: 'channel-tile__label', [
+                Component.text(link.label),
+              ]),
+              span(classes: 'channel-tile__value', [
+                Component.text(value),
+              ]),
             ]),
-            span(classes: 'channel-tile__value', [Component.text(value)]),
+            // Action glyph in the far right (↗ for external, → for mailto).
+            span(classes: 'channel-tile__arrow mono', [
+              Component.text(isExternal ? '↗' : '→'),
+            ]),
           ],
         ),
       ],
