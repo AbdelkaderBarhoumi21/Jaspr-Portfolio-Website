@@ -4,7 +4,7 @@
 //   1. Static brand mark + desktop links + mobile hamburger button.
 //   2. `data-navbar` + `data-nav-link` data-attrs that the vanilla-JS in
 //      animation_scripts.dart hooks into for scroll-blur and ScrollSpy.
-//   3. `_MobileNavToggle` — the only @client component on the page so the
+//   3. `MobileNavToggle` — the only @client component on the page so the
 //      hamburger can flip the menu open/closed without a full Stateful
 //      hydration of the whole navbar.
 
@@ -51,7 +51,7 @@ class Navbar extends StatelessComponent {
           ]),
 
           // Mobile-only hamburger (@client island).
-          const _MobileNavToggle(),
+          const MobileNavToggle(),
         ]),
       ],
     );
@@ -255,14 +255,14 @@ class Navbar extends StatelessComponent {
 // button click can toggle the menu without a page reload.
 // ---------------------------------------------------------------------------
 @client
-class _MobileNavToggle extends StatefulComponent {
-  const _MobileNavToggle();
+class MobileNavToggle extends StatefulComponent {
+  const MobileNavToggle();
 
   @override
-  State<_MobileNavToggle> createState() => _MobileNavToggleState();
+  State<MobileNavToggle> createState() => MobileNavToggleState();
 }
 
-class _MobileNavToggleState extends State<_MobileNavToggle> {
+class MobileNavToggleState extends State<MobileNavToggle> {
   bool _open = false;
 
   void _toggle() => setState(() => _open = !_open);
