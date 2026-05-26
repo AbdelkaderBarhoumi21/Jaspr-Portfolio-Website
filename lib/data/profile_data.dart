@@ -32,6 +32,25 @@ abstract final class ProfileData {
   static const String appsShipped     = '10+';
   static const String spokenLanguages = '3';
 
+  // ---------- Current status (the "Now" bento card) ----------
+  /// Short, present-tense sentence shown on the About bento.
+  static const String nowDoing  = 'Building Sparta Coaching at Oxton Digital';
+  /// Where the current focus is, as a tiny chip ("on-site", "remote", …).
+  static const String nowPlace  = 'Tunis · on-site';
+  /// Optional tagline under the now sentence.
+  static const String nowDetail =
+      'Cross-platform fitness app — Flutter, BLoC, GetStream.IO, Firebase Crashlytics.';
+
+  // ---------- One-liner about how I work (Philosophy bento card) ----------
+  static const String philosophy =
+      'Ship clean architecture, write tests where state hurts, and treat the '
+      'edge cases as first-class citizens — every BLE drop, offline tap, and '
+      'app-resume should feel like part of the product.';
+
+  // ---------- Quick "available for" line ----------
+  static const String availability =
+      'Open to mobile engineering roles, freelance builds, and IoT projects.';
+
   // ---------- Spoken languages ----------
   static const List<String> languages = [
     'Arabic (Native)',
