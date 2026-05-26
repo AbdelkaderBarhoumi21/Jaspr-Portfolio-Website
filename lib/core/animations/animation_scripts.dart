@@ -132,6 +132,28 @@ const String animationScripts = r'''
     }
 
     // ---------------------------------------------------------------
+    // 3b. Mobile menu auto-close — when the user taps a link in the
+    // drawer, let the browser handle the anchor navigation, then strip
+    // .is-open from the toggle + menu so the drawer slides away.
+    // The toggle itself is an @client component that owns React-like
+    // state — we can't reach into it, so we just brute-remove the
+    // class. On the next render the component will resync.
+    // ---------------------------------------------------------------
+    document.addEventListener('click', (e) => {
+      const link = e.target && e.target.closest
+        ? e.target.closest('.mobile-menu__link')
+        : null;
+      if (!link) return;
+      // Defer to after the browser has started navigation.
+      requestAnimationFrame(() => {
+        const toggle = document.querySelector('.nav-toggle.is-open');
+        const menu = document.querySelector('.mobile-menu.is-open');
+        if (toggle) toggle.classList.remove('is-open');
+        if (menu) menu.classList.remove('is-open');
+      });
+    });
+
+    // ---------------------------------------------------------------
     // 4. ScrollSpy — highlight the active nav link
     // ---------------------------------------------------------------
     const navLinks = Array.from(

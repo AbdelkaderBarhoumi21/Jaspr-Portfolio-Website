@@ -295,10 +295,14 @@ class MobileNavToggleState extends State<MobileNavToggle> {
           ul(classes: 'mobile-menu__links', [
             for (final item in AppAnchors.items)
               li([
+                // NOTE: do NOT pass `onClick` here — Jaspr's <a onClick>
+                // overrides the default link behavior and the anchor jump
+                // never fires. The drawer auto-closes via the global JS
+                // handler in animation_scripts.dart (it listens for
+                // clicks on .mobile-menu__link and removes .is-open).
                 a(
                   href: AppAnchors.hash(item.id),
                   classes: 'mobile-menu__link',
-                  onClick: () => setState(() => _open = false),
                   [Component.text(item.label)],
                 ),
               ]),
