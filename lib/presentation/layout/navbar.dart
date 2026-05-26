@@ -26,12 +26,18 @@ class Navbar extends StatelessComponent {
       classes: 'navbar',
       [
         div(classes: 'navbar__inner', [
-          // Brand mark — links back to #home.
+          // Brand mark — links back to #home. The <img> path is relative
+          // so it works under both the local dev server and the GitHub
+          // Pages subpath (Document(base:...) rewrites it).
           a(
             href: AppAnchors.hash(AppAnchors.home),
             classes: 'navbar__brand',
             [
-              span(classes: 'navbar__brand-mark', [Component.text('AB')]),
+              img(
+                src: 'images/logo_site_1.png',
+                alt: '${ProfileData.firstName} logo',
+                classes: 'navbar__brand-logo',
+              ),
               span(classes: 'navbar__brand-name', [
                 Component.text(ProfileData.firstName),
               ]),
@@ -119,21 +125,14 @@ class Navbar extends StatelessComponent {
       fontWeight: AppTypography.semibold,
       textDecoration: const TextDecoration(line: TextDecorationLine.none),
     ),
-    css('.navbar__brand-mark').styles(
-      display: Display.inlineFlex,
+    // Logo PNG (sits left of the brand name). Square 32px slot so the
+    // image scales cleanly without distorting at any breakpoint.
+    css('.navbar__brand-logo').styles(
+      display: Display.block,
       width: 32.px,
       height: 32.px,
-      justifyContent: JustifyContent.center,
-      alignItems: AlignItems.center,
-      color: AppColors.textPrimary,
-      fontFamily: const FontFamily.list([
-        AppTypography.fontMono,
-        FontFamilies.monospace,
-      ]),
-      fontSize: 0.8.rem,
-      fontWeight: AppTypography.bold,
       raw: {
-        'background': 'var(--brand-gradient)',
+        'object-fit': 'contain',
         'border-radius': '${AppSpacing.radiusSm}px',
       },
     ),

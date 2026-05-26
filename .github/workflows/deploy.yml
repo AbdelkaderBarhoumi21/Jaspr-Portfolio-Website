@@ -1,0 +1,113 @@
+# Builds the Jaspr static site and deploys it to GitHub Pages.
+#
+# Triggers:
+#   - every push to `main`
+#   - manual run via the Actions tab ("Run workflow")
+#
+# After the first successful run, the site is reachable at:
+#   https://abdelkaderbarhoumi21.github.io/portfolio/
+#
+# One-time GitHub setup before the first run:
+#   1. Repo → Settings → Pages → Source: "GitHub Actions" (not "Deploy from a branch").
+#   2. Repo → Settings → Actions → General → Workflow permissions:
+#      enable "Read and write permissions" (or leave default if Pages permissions are set).
+#   3. Push this file to `main`.
+#
+# The workflow uses the modern Pages-deployment flow (upload-pages-artifact
+# + deploy-pages) — no `gh-pages` branch is created.
+
+name: Deploy Jaspr site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow the workflow to publish to Pages and request an OIDC token for it.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time; queue new pushes, never run two builds in
+# parallel against the same Pages site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # -------------------------------------------------------------------
+  # 1. Build the static site
+  # -------------------------------------------------------------------
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          # Matches the SDK constraint in pubspec.yaml (^3.10.0).
+          sdk: stable
+
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: pub-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          restore-keys: |
+            pub-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Install Jaspr CLI
+        run: dart pub global activate jaspr_cli
+
+      - name: Run build_runner (regenerates *.options.dart + *.imports.dart)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Build static site
+        env:
+          # GitHub Pages hosts project sites under /<repo-name>/, so the
+          # runtime base must match. The leading + trailing slashes are
+          # required. If you ever rename the repo, change BOTH values
+          # below to match the new path.
+          BASE_HREF: /portfolio/
+          SITE_URL: https://abdelkaderbarhoumi21.github.io/portfolio/
+        run: |
+          jaspr build \
+            --dart-define-server=BASE_HREF=$BASE_HREF \
+            --dart-define-server=SITE_URL=$SITE_URL \
+            --sitemap-domain $SITE_URL
+
+      # GitHub Pages defaults to Jekyll, which strips files/folders that
+      # start with an underscore. Dart's compiled JS includes files like
+      # `_internal_*.js` that Pages would silently drop without this marker.
+      - name: Add .nojekyll marker
+        run: touch build/jaspr/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/jaspr
+
+  # -------------------------------------------------------------------
+  # 2. Deploy the built artifact to the Pages environment
+  # -------------------------------------------------------------------
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      # GitHub fills this in automatically with the live deployment URL.
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

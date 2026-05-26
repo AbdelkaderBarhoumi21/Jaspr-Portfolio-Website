@@ -35,7 +35,35 @@ Also remember to:
 
 - Drop `web/cv/Mobile_Abdelkader_Barhoumi_CV.pdf` for the Download CV button.
 - Drop `web/images/og-card.png` (1200×630) for social link previews.
-- Update `_siteUrl` in `lib/main.server.dart` if the domain isn't the one above.
+
+### Deploy to GitHub Pages
+
+The repo ships a workflow at `.github/workflows/deploy.yml` that builds
+the site and publishes it to GitHub Pages on every push to `main`.
+
+**One-time setup** (do this once in the GitHub UI):
+
+1. Repo → **Settings → Pages → Source: "GitHub Actions"** (not "Deploy from a branch").
+2. Push the workflow file to `main` (the first push to `main` after that triggers a deploy).
+
+After ~2 minutes, the site is live at:
+
+> <https://abdelkaderbarhoumi21.github.io/portfolio/>
+
+**How the subpath works.** GitHub Pages hosts project sites under
+`/<repo-name>/`, so `index.html` and every asset must use that as a base.
+The workflow passes `BASE_HREF=/portfolio/` to the build via
+`--dart-define-server`, which `lib/main.server.dart` reads at SSG time
+and passes to `Document(base: ...)`. Local `jaspr serve` is unaffected
+(no env var → defaults to `/`).
+
+**Custom domain.** If you later buy a domain (e.g. `abdelkaderbarhoumi.dev`):
+
+1. Add a `CNAME` file to `web/` containing the domain.
+2. Configure DNS at your registrar.
+3. Repo → **Settings → Pages → Custom domain** → enter the domain.
+4. Edit `.github/workflows/deploy.yml`: change `BASE_HREF` to `/` and
+   `SITE_URL` to your domain.
 
 ### After deleting or renaming `@client` components
 

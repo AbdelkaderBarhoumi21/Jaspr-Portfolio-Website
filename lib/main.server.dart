@@ -27,8 +27,28 @@ const _siteDescription =
     'Portfolio of Barhoumi Abdelkader — Mobile Software Engineer building '
     'high-performance Flutter & Android apps with clean architecture, '
     'BLE/IoT integrations, and full-stack Rust/Node backends.';
-const _siteUrl = 'https://abdelkaderbarhoumi.dev/';
+// Public URL of the deployed site (used in canonical / OG / Twitter tags).
+// Override at build time via `--dart-define-server=SITE_URL=https://...`.
+// MUST end with a trailing slash.
+const _siteUrl = String.fromEnvironment(
+  'SITE_URL',
+  defaultValue: 'https://abdelkaderbarhoumi21.github.io/portfolio/',
+);
 const _ogImage = 'images/og-card.png'; // 1200×630 recommended; drop in web/images/
+
+// ---------------------------------------------------------------------------
+// Base href.
+//
+// When this site is hosted at the root of a domain (e.g.
+// https://example.com/), base should be '/'. When hosted under a subpath
+// such as GitHub Pages project pages
+// (https://user.github.io/portfolio/), base must be '/portfolio/'.
+//
+// The value is supplied at build time via:
+//   jaspr build --dart-define-server=BASE_HREF=/portfolio/
+// and falls back to '/' for local `jaspr serve`.
+// ---------------------------------------------------------------------------
+const _baseHref = String.fromEnvironment('BASE_HREF', defaultValue: '/');
 
 // ---------------------------------------------------------------------------
 // Pre-hydration theme script.
@@ -67,6 +87,7 @@ void main() {
     Document(
       title: _siteTitle,
       lang: 'en',
+      base: _baseHref,
       // `Document(meta: ...)` emits standard <meta name="..."> tags.
       // Open Graph and Twitter tags use `property=` / non-`name` attributes,
       // so they're rendered via explicit `meta(...)` components in `head:`.
@@ -84,15 +105,14 @@ void main() {
         // -----------------------------------------------------------------
         // Favicons
         //
-        // When you have a higher-res icon set, replace these with:
-        //   favicon-32.png + favicon-16.png + apple-touch-icon-180.png
-        // and update the `sizes` attribute accordingly. The .ico fallback
-        // covers legacy browsers and the Windows tile.
+        // Modern browsers prefer the PNG; we keep favicon.ico as the
+        // fallback for legacy clients (IE / Outlook / Windows tiles).
         // -----------------------------------------------------------------
-        link(rel: 'icon', href: 'favicon.ico', type: 'image/x-icon'),
+        link(rel: 'icon', href: 'images/logo_site_1.png', type: 'image/png'),
+        link(rel: 'shortcut icon', href: 'favicon.ico'),
         link(
           rel: 'apple-touch-icon',
-          href: 'favicon.ico',
+          href: 'images/logo_site_1.png',
           attributes: {'sizes': '180x180'},
         ),
 
