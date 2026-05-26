@@ -307,7 +307,7 @@ class CommandPalette extends StatelessComponent {
     css('.cmdk__backdrop').styles(
       position: Position.absolute(top: Unit.zero, left: Unit.zero, right: Unit.zero, bottom: Unit.zero),
       raw: {
-        'background': 'rgba(8, 8, 16, 0.55)',
+        'background': 'var(--bg-translucent-strong)',
         'backdrop-filter': 'blur(4px)',
         '-webkit-backdrop-filter': 'blur(4px)',
         'animation': 'cmdk-fade 180ms var(--ease-out) both',
@@ -325,8 +325,8 @@ class CommandPalette extends StatelessComponent {
       raw: {
         'border-radius': '${AppSpacing.radiusLg}px',
         'overflow': 'hidden',
-        'background': 'rgba(15, 15, 26, 0.95)',
-        'border': '1px solid rgba(255, 255, 255, 0.12)',
+        'background': 'var(--surface)',
+        'border': '1px solid var(--glass-border)',
         'box-shadow':
             '0 24px 64px -16px rgba(0, 0, 0, 0.6), '
             '0 0 0 1px rgba(108, 99, 255, 0.18)',
@@ -383,7 +383,7 @@ class CommandPalette extends StatelessComponent {
       ]),
       fontSize: AppTypography.eyebrowSize,
       raw: {
-        'background': 'rgba(255, 255, 255, 0.06)',
+        'background': 'var(--glass-bg)',
         'border': '1px solid var(--glass-border)',
         'border-radius': '6px',
       },

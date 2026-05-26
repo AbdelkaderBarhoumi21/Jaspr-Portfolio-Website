@@ -13,6 +13,7 @@ import 'package:jaspr/jaspr.dart';
 
 import '../../core/constants/app_anchors.dart';
 import '../../core/theme/app_theme.dart';
+import '../widgets/theme_toggle.dart';
 import '../../data/profile_data.dart';
 
 class Navbar extends StatelessComponent {
@@ -50,7 +51,7 @@ class Navbar extends StatelessComponent {
               ]),
           ]),
 
-          // Right-side actions: Ctrl+K hint (desktop) + mobile hamburger.
+          // Right-side actions: ⌘K hint (desktop), theme toggle, mobile hamburger.
           div(classes: 'navbar__actions', [
             // Discoverability chip for the command palette. The JS in
             // animation_scripts.dart exposes window.__openCmdK so this
@@ -67,6 +68,8 @@ class Navbar extends StatelessComponent {
                 span([Component.text('K')]),
               ],
             ),
+            // Light/dark theme switch (@client island).
+            const ThemeToggle(),
             // Mobile-only hamburger (@client island).
             const MobileNavToggle(),
           ]),
@@ -91,7 +94,7 @@ class Navbar extends StatelessComponent {
     ),
     // .is-scrolled is added by JS once scrollY > 40
     css('.navbar.is-scrolled').styles(raw: {
-      'background': 'rgba(8, 8, 16, 0.65)',
+      'background': 'var(--bg-translucent)',
       'backdrop-filter': 'blur(14px) saturate(1.1)',
       '-webkit-backdrop-filter': 'blur(14px) saturate(1.1)',
       'border-bottom-color': 'var(--divider)',
@@ -164,7 +167,7 @@ class Navbar extends StatelessComponent {
       ]),
       fontSize: AppTypography.eyebrowSize,
       raw: {
-        'background': 'rgba(255, 255, 255, 0.04)',
+        'background': 'var(--glass-bg)',
         'border': '1px solid var(--glass-border)',
         'border-radius': '6px',
         'transition':

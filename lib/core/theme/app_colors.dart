@@ -1,39 +1,49 @@
-// The project's color palette — the only place hex codes are allowed to live.
+// The project's color tokens.
 //
-// Like Flutter's `AppColors` class, every section/widget imports from here
-// instead of typing literal hex codes. To re-theme the site, edit this file.
+// IMPORTANT — runtime values come from CSS variables, NOT hard-coded hex.
+// Each `AppColors.x` returns `Color('var(--x)')` which resolves at render
+// time. The actual hex values for both themes live in `:root` (dark) and
+// `[data-theme="light"]` (light), declared in `global_styles.dart`.
+//
+// Why: this lets the theme toggle flip ONE attribute on <html> and the
+// whole site recolors with a single CSS transition, without re-rendering
+// any Dart components.
+//
+// Brand colors (primary violet + secondary cyan) and their gradient stops
+// are intentionally NOT swapped between themes — they're brand identity.
+// Only neutral surfaces and text colors change.
 
 import 'package:jaspr/dom.dart';
 
 abstract final class AppColors {
-  // Surfaces
-  static const Color bg          = Color('#080810'); // page background (ultra-dark, not pure black)
-  static const Color bgAlt       = Color('#0F0F1A'); // alternating section background
-  static const Color surface     = Color('#13131F'); // solid card surface
+  // ----- Surfaces ----------------------------------------------------------
+  static const Color bg          = Color('var(--bg)');
+  static const Color bgAlt       = Color('var(--bg-alt)');
+  static const Color surface     = Color('var(--surface)');
 
-  // Glassmorphism
-  static const Color glassBg     = Color('rgba(255, 255, 255, 0.05)');
-  static const Color glassBorder = Color('rgba(255, 255, 255, 0.10)');
+  // ----- Glassmorphism -----------------------------------------------------
+  static const Color glassBg     = Color('var(--glass-bg)');
+  static const Color glassBorder = Color('var(--glass-border)');
 
-  // Accents
-  static const Color primary     = Color('#6C63FF'); // violet
-  static const Color secondary   = Color('#00D9FF'); // cyan
-  static const Color primarySoft = Color('rgba(108, 99, 255, 0.18)'); // hover glow
-  static const Color secondarySoft = Color('rgba(0, 217, 255, 0.18)');
+  // ----- Brand accents (same in both themes) -------------------------------
+  static const Color primary       = Color('#6C63FF'); // violet
+  static const Color secondary     = Color('#00D9FF'); // cyan
+  static const Color primarySoft   = Color('var(--primary-soft)');
+  static const Color secondarySoft = Color('var(--secondary-soft)');
 
-  // Text
-  static const Color textPrimary   = Color('#E8E8F0');
-  static const Color textSecondary = Color('#8888AA');
-  static const Color textMuted     = Color('#5A5A75');
+  // ----- Text --------------------------------------------------------------
+  static const Color textPrimary   = Color('var(--text-primary)');
+  static const Color textSecondary = Color('var(--text-secondary)');
+  static const Color textMuted     = Color('var(--text-muted)');
 
-  // Hairlines
-  static const Color divider = Color('rgba(255, 255, 255, 0.08)');
+  // ----- Hairlines / dividers ----------------------------------------------
+  static const Color divider = Color('var(--divider)');
 
-  // Semantic
-  static const Color shadow = Color('rgba(0, 0, 0, 0.40)');
+  // ----- Semantic ----------------------------------------------------------
+  static const Color shadow = Color('var(--shadow)');
 
-  // Gradient stops (used as raw strings in `linear-gradient(...)`).
-  // Keep these in sync with `primary` / `secondary`.
+  // ----- Gradient stops (raw strings used inside `linear-gradient(...)`) ---
+  // Brand identity — never swapped between themes.
   static const String gradientStart = '#6C63FF';
   static const String gradientEnd   = '#00D9FF';
   static const String brandGradient =

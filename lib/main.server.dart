@@ -30,6 +30,31 @@ const _siteDescription =
 const _siteUrl = 'https://abdelkaderbarhoumi.dev/';
 const _ogImage = 'images/og-card.png'; // 1200×630 recommended; drop in web/images/
 
+// ---------------------------------------------------------------------------
+// Pre-hydration theme script.
+//
+// Runs synchronously (NOT deferred) before any pixels are painted, so a
+// returning light-mode user never sees the dark default flash. Order:
+//   1. Read the persisted preference from `localStorage.theme`.
+//   2. Fall back to the OS preference (`prefers-color-scheme: light`).
+//   3. Default to dark.
+// Then set `data-theme` on `<html>`, which the global :root / [data-theme]
+// CSS blocks pick up before first paint.
+//
+// Wrapped in try/catch because some browsers throw on localStorage in
+// private mode — we just no-op and let the default styles win.
+// ---------------------------------------------------------------------------
+const _themeBootstrapScript = '''
+(function(){
+  try {
+    var stored = localStorage.getItem('theme');
+    var mql = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)');
+    var theme = stored || (mql && mql.matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (_) {}
+})();
+''';
+
 void main() {
   Jaspr.initializeApp(options: defaultServerOptions);
 
@@ -100,6 +125,13 @@ void main() {
         meta(name: 'twitter:title',       content: _siteTitle),
         meta(name: 'twitter:description', content: _siteDescription),
         meta(name: 'twitter:image',       content: '$_siteUrl$_ogImage'),
+
+        // -----------------------------------------------------------------
+        // Theme bootstrap — MUST run before paint to avoid FOUC.
+        // No `defer`/`async` so the browser blocks first paint until this
+        // tiny IIFE has set data-theme on <html>.
+        // -----------------------------------------------------------------
+        script(content: _themeBootstrapScript),
 
         // -----------------------------------------------------------------
         // Animation scripts — IntersectionObserver, typewriter, ScrollSpy,

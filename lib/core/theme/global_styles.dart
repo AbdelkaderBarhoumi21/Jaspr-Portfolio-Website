@@ -27,25 +27,110 @@ List<StyleRule> get globalStyles => [
   ),
 
   // -----------------------------------------------------------------
-  // 2. CSS custom properties on :root.
-  //    Raw-CSS sites (gradients, glass, keyframes) reference these
-  //    via `var(--primary)` so we don't repeat hex codes.
+  // 2. CSS custom properties — DARK palette (default) on :root.
+  //
+  //    The whole site reads its colors from these vars. To switch
+  //    themes, the JS in the ThemeToggle component sets
+  //    `data-theme="light"` on <html>; the [data-theme="light"]
+  //    block below redefines the same vars with the light palette
+  //    and CSS resolution does the rest.
+  //
+  //    Brand violet/cyan stay the same across themes — only neutral
+  //    surfaces and text shift.
   // -----------------------------------------------------------------
   css(':root').styles(raw: {
+    // Surfaces
     '--bg': '#080810',
     '--bg-alt': '#0F0F1A',
     '--surface': '#13131F',
+    // Glass overlay — white tint at low alpha on dark surfaces.
     '--glass-bg': 'rgba(255, 255, 255, 0.05)',
     '--glass-border': 'rgba(255, 255, 255, 0.10)',
+    // Brand
     '--primary': '#6C63FF',
     '--secondary': '#00D9FF',
+    '--primary-soft':   'rgba(108, 99, 255, 0.18)',
+    '--secondary-soft': 'rgba(0, 217, 255, 0.18)',
+    // Text
     '--text-primary': '#E8E8F0',
     '--text-secondary': '#8888AA',
     '--text-muted': '#5A5A75',
+    // Hairlines + semantic
     '--divider': 'rgba(255, 255, 255, 0.08)',
+    '--shadow': 'rgba(0, 0, 0, 0.40)',
+    // Bg color with alpha — used for sticky surfaces (navbar scrolled
+    // state, palette backdrop) where we need page-tinted translucency.
+    '--bg-translucent':       'rgba(8, 8, 16, 0.65)',
+    '--bg-translucent-strong':'rgba(8, 8, 16, 0.55)',
+    // Brand gradient (used wherever we need a CSS string).
     '--brand-gradient': AppColors.brandGradient,
+    // Easing + layout constants.
     '--ease-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
     '--navbar-h': '${AppSpacing.navbarHeight}px',
+    // Color scheme — drives form-control / scrollbar rendering.
+    'color-scheme': 'dark',
+  }),
+
+  // -----------------------------------------------------------------
+  // 2b. LIGHT palette — applied when <html data-theme="light">.
+  //
+  //     Notes:
+  //     - Surfaces shift to near-whites with a hint of cool blue, not
+  //       pure white (`#FAFAFC`) — easier on the eyes.
+  //     - Glass overlay swaps to BLACK at low alpha. White-on-light
+  //       would vanish, black-on-light gives the same depth.
+  //     - Hairlines / dividers also swap to dark-on-light.
+  //     - Brand violet darkens slightly (`#5A4FEA`) for better contrast
+  //       against a light surface; gradient stays brand-gradient string
+  //       (still readable on the gradient-text headings against light bg).
+  //     - color-scheme: light → scrollbars + form widgets become light.
+  // -----------------------------------------------------------------
+  css('[data-theme="light"]').styles(raw: {
+    // Surfaces — cool off-white, very pale lavender alt, near-white card.
+    '--bg': '#FAFAFC',
+    '--bg-alt': '#F2F2F8',
+    '--surface': '#FFFFFF',
+    // Glass overlay — dark tint at low alpha.
+    '--glass-bg': 'rgba(15, 15, 26, 0.04)',
+    '--glass-border': 'rgba(15, 15, 26, 0.10)',
+    // Brand — darken slightly for AA contrast on light surface.
+    '--primary': '#5A4FEA',
+    '--secondary': '#00B0D8',
+    '--primary-soft':   'rgba(90, 79, 234, 0.14)',
+    '--secondary-soft': 'rgba(0, 176, 216, 0.14)',
+    // Text — near-black for primary, gray ramps below.
+    '--text-primary': '#0F0F1A',
+    '--text-secondary': '#52526A',
+    '--text-muted': '#8A8AA0',
+    // Hairlines + shadow.
+    '--divider': 'rgba(15, 15, 26, 0.08)',
+    '--shadow': 'rgba(0, 0, 0, 0.10)',
+    // Sticky-surface translucency on light bg.
+    '--bg-translucent':        'rgba(250, 250, 252, 0.78)',
+    '--bg-translucent-strong': 'rgba(250, 250, 252, 0.68)',
+    // Light-themed gradient — keep brand but darken stops slightly
+    // so gradient-text remains legible on white.
+    '--brand-gradient': 'linear-gradient(135deg, #5A4FEA, #00B0D8)',
+    'color-scheme': 'light',
+  }),
+
+  // Smooth the theme transition — applied to a curated list of
+  // properties so unrelated transitions (e.g. button hovers) keep
+  // their existing snappy 180–240ms feel.
+  css('html').styles(raw: {
+    'transition':
+        'background-color 260ms var(--ease-out), '
+        'color 260ms var(--ease-out)',
+  }),
+  css('body, .glass, .navbar, .neon-btn, .skill-badge, '
+      '.bento-tile, .timeline-card, .project-card, '
+      '.channel-tile, .cmdk__panel, .cmdk-hint, .nav-toggle, '
+      '.scroll-progress__fill, .back-to-top, .footer').styles(raw: {
+    'transition':
+        'background-color 220ms var(--ease-out), '
+        'border-color 220ms var(--ease-out), '
+        'color 220ms var(--ease-out), '
+        'box-shadow 220ms var(--ease-out)',
   }),
 
   // -----------------------------------------------------------------
@@ -79,9 +164,10 @@ List<StyleRule> get globalStyles => [
       '-webkit-font-smoothing': 'antialiased',
       '-moz-osx-font-smoothing': 'grayscale',
       'text-rendering': 'optimizeLegibility',
-      // Subtle dot-grid background pattern over the dark base color.
+      // Subtle dot-grid background pattern.
+      // Uses --divider so it auto-flips between light and dark themes.
       'background-image':
-          'radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px)',
+          'radial-gradient(var(--divider) 1px, transparent 1px)',
       'background-size': '24px 24px',
       'background-attachment': 'fixed',
     },
