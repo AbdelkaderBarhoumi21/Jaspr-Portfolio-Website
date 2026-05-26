@@ -30,14 +30,13 @@ class ContactSection extends StatelessComponent {
 
   // Map the three channels back to their inline-SVG icons in ProfileData.
   // Resolved by `label` so it survives reordering the socials list.
-  static SocialLink _findIcon(String label) =>
-      ProfileData.socials.firstWhere((social) => social.label == label);
+  static SocialLink _findIcon(String label) => ProfileData.socials.firstWhere((social) => social.label == label);
 
   @override
   Component build(BuildContext context) {
-    final email    = _findIcon('Email');
+    final email = _findIcon('Email');
     final linkedin = _findIcon('LinkedIn');
-    final github   = _findIcon('GitHub');
+    final github = _findIcon('GitHub');
 
     return SectionContainer(
       id: AppAnchors.contact,
@@ -106,16 +105,32 @@ class ContactSection extends StatelessComponent {
     // ----- Tile grid -----
     // Mobile: single column, tight gaps.
     // bpMd+ : 3 columns side-by-side.
+    //
+    // `minmax(0, 1fr)` is the standard CSS Grid escape hatch — without
+    // the `0` min, a long child (the email address) would force the
+    // column wider than 1fr and collapse the grid back to 1 column.
     css('.contact__grid').styles(
       display: Display.grid,
       margin: Margin.only(bottom: AppSpacing.lg.rem),
       gap: const Gap(row: Unit.rem(0.6), column: Unit.rem(0.75)),
-      raw: {'grid-template-columns': '1fr'},
+      raw: {'grid-template-columns': 'minmax(0, 1fr)'},
     ),
-    css('@media (min-width: ${AppSpacing.bpMd.toInt()}px)', [
-      css('.contact__grid').styles(raw: {
-        'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
-      }),
+    // Each grid cell is a RevealOnScroll wrapper div; we need it to
+    // stretch full-width AND allow its content to shrink so the email
+    // ellipsis can kick in inside a 1/3-width column.
+    css('.contact__grid > *').styles(
+      width: 100.percent,
+      raw: {'min-width': '0'},
+    ),
+    // Tablet and up — go straight to 3 columns. We deliberately do
+    // NOT wait for bpMd (768px) here; the rows are compact enough
+    // that even a 600px-wide tablet fits all three.
+    css('@media (min-width: 600px)', [
+      css('.contact__grid').styles(
+        raw: {
+          'grid-template-columns': 'repeat(3, minmax(0, 1fr))',
+        },
+      ),
     ]),
 
     // ----- Tile (the clickable card) -----
@@ -136,11 +151,13 @@ class ContactSection extends StatelessComponent {
             'border-color 220ms var(--ease-out)',
       },
     ),
-    css('.channel-tile:hover').styles(raw: {
-      'transform': 'translateY(-2px)',
-      'box-shadow': '0 10px 24px -10px rgba(108, 99, 255, 0.45)',
-      'border-color': 'rgba(108, 99, 255, 0.40)',
-    }),
+    css('.channel-tile:hover').styles(
+      raw: {
+        'transform': 'translateY(-2px)',
+        'box-shadow': '0 10px 24px -10px rgba(108, 99, 255, 0.45)',
+        'border-color': 'rgba(108, 99, 255, 0.40)',
+      },
+    ),
     css('.channel-tile:hover .channel-tile__arrow').styles(
       color: AppColors.textPrimary,
       raw: {'transform': 'translateX(2px)'},
@@ -246,9 +263,7 @@ class _ChannelTile extends StatelessComponent {
         a(
           href: link.url,
           target: isExternal ? Target.blank : null,
-          attributes: isExternal
-              ? const {'rel': 'noopener noreferrer'}
-              : null,
+          attributes: isExternal ? const {'rel': 'noopener noreferrer'} : null,
           classes: 'channel-tile glass',
           [
             // Icon halo (left).
