@@ -20,13 +20,17 @@ class SocialIcon extends StatelessComponent {
     return a(
       href: link.url,
       target: isExternal ? Target.blank : null,
-      attributes: isExternal ? const {'rel': 'noopener noreferrer'} : null,
+      attributes: {
+        if (isExternal) 'rel': 'noopener noreferrer',
+        'aria-label': link.label,
+      },
       classes: 'social-icon glow-hover',
       [
-        span(
-          attributes: {'aria-label': link.label},
-          [RawText(link.iconSvg)],
-        ),
+        // The inline SVG sits inside an icon wrapper that grid-centers
+        // it. Grid `place-items: center` is the most reliable way to
+        // perfectly center inline-SVG regardless of any intrinsic
+        // baseline/width attributes the SVG may carry.
+        span(classes: 'social-icon__icon', [RawText(link.iconSvg)]),
       ],
     );
   }
@@ -35,17 +39,16 @@ class SocialIcon extends StatelessComponent {
   static List<StyleRule> get styles => [
     css('.social-icon').styles(
       display: Display.inlineFlex,
-      alignItems: AlignItems.center,
-      justifyContent: JustifyContent.center,
       width: 44.px,
       height: 44.px,
+      justifyContent: JustifyContent.center,
+      alignItems: AlignItems.center,
       color: AppColors.textSecondary,
       raw: {
         'background': 'var(--glass-bg)',
         'border': '1px solid var(--glass-border)',
         'border-radius': '${AppSpacing.radiusFull}px',
-        'transition':
-            'color 200ms var(--ease-out), background 200ms var(--ease-out)',
+        'transition': 'color 200ms var(--ease-out), background 200ms var(--ease-out)',
       },
     ),
     css('.social-icon:hover').styles(
@@ -54,9 +57,20 @@ class SocialIcon extends StatelessComponent {
         'background': 'rgba(108, 99, 255, 0.18)',
       },
     ),
-    css('.social-icon svg').styles(
+    // Inner wrapper that perfectly centers the SVG.
+    css('.social-icon__icon').styles(
+      display: Display.inlineFlex,
       width: 20.px,
       height: 20.px,
+      justifyContent: JustifyContent.center,
+      alignItems: AlignItems.center,
+      raw: {'line-height': '0'},
+    ),
+    // Force the SVG to occupy the full wrapper, with no baseline gap.
+    css('.social-icon svg').styles(
+      display: Display.block,
+      width: 100.percent,
+      height: 100.percent,
     ),
   ];
 }
