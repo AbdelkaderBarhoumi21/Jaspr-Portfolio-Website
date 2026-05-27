@@ -57,10 +57,11 @@ const _baseHref = String.fromEnvironment('BASE_HREF', defaultValue: '/');
 // never depends on the build output copying a binary asset over. Renders
 // crisp at any size (tabs, bookmarks, taskbar).
 //
-// Composition: violet→cyan gradient rounded square + the owner's AB
-// monogram paths (mirrors web/images/logo.svg) painted white on top.
-// The viewBox matches the source SVG's 4000×4000 coordinate system so
-// the paths sit unmodified.
+// Composition: transparent background, AB monogram paths (mirrors
+// web/images/logo.svg) filled with the brand violet→cyan gradient so
+// the mark reads on light AND dark browser tab chrome without a pill.
+// viewBox matches the source SVG's 4000×4000 coordinate system so the
+// paths sit unmodified.
 // ---------------------------------------------------------------------------
 const _faviconDataUri =
     'data:image/svg+xml;utf8,'
@@ -71,8 +72,7 @@ const _faviconDataUri =
     '<stop offset=%221%22 stop-color=%22%2300D9FF%22/>'
     '</linearGradient>'
     '</defs>'
-    '<rect width=%224000%22 height=%224000%22 rx=%22750%22 fill=%22url(%23g)%22/>'
-    '<g fill=%22white%22 fill-rule=%22evenodd%22 clip-rule=%22evenodd%22>'
+    '<g fill=%22url(%23g)%22 fill-rule=%22evenodd%22 clip-rule=%22evenodd%22>'
     '<path d=%22M2653.652,2828.257h249.704c231.174,0,420.312-189.139,420.312-420.311c0-94.366-31.516-181.726-84.543-252.078c-26.72-35.45-58.903-66.58-95.268-92.111c-43.229,45.323-95.27,82.158-153.281,107.761c10.292,3.826,20.272,8.306,29.889,13.391c80.082,42.351,134.97,126.595,134.97,223.037c0,138.644-113.445,252.078-252.08,252.078h-89.86h-256.973L2653.652,2828.257z%22/>'
     '<path d=%22M1388.119,1931.875l194.658-337.155l147.078-254.745l-97.13-168.232l-480.176,831.688c60.874-37.902,130.358-62.097,203.679-69.781C1367.007,1932.52,1377.54,1932.061,1388.119,1931.875%22/>'
     '<path d=%22M1877.257,1931.748l-341.661-591.771l97.13-168.234l438.791,760.005H1877.257z M2394.861,2828.257l-267.338-463.04l-88.601-153.459h194.258l355.938,616.5H2394.861z%22/>'

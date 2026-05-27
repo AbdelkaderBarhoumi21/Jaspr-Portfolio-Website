@@ -175,26 +175,23 @@ class Navbar extends StatelessComponent {
       fontWeight: AppTypography.semibold,
       textDecoration: const TextDecoration(line: TextDecorationLine.none),
     ),
-    // Inline-SVG brand mark — gradient pill with the AB monogram on top.
-    // `color: white` makes the SVG paths paint white because their
-    // fill is `currentColor`.
+    // Inline-SVG brand mark — standalone, no background pill.
+    // `color: var(--primary)` makes the SVG paths paint in the brand
+    // violet (auto-flips to its light-theme value via the CSS var).
     css('.navbar__brand-mark').styles(
       display: Display.inlineFlex,
       width: 32.px,
       height: 32.px,
       justifyContent: JustifyContent.center,
       alignItems: AlignItems.center,
-      color: Colors.white,
       raw: {
-        'background': 'var(--brand-gradient)',
-        'border-radius': '${AppSpacing.radiusSm}px',
-        'box-shadow': '0 4px 12px -4px rgba(108, 99, 255, 0.55)',
+        'color': 'var(--primary)',
       },
     ),
     css('.navbar__brand-mark svg').styles(
       display: Display.block,
-      width: 20.px,
-      height: 20.px,
+      width: 32.px,
+      height: 32.px,
     ),
     css('.navbar__brand-name').styles(
       fontFamily: const FontFamily.list([
