@@ -81,34 +81,40 @@ class TimelineItem extends StatelessComponent {
 
   @css
   static List<StyleRule> get styles => [
+    // Mobile-first: tight gap, smaller rail. `minmax(0, 1fr)` on the
+    // body column is critical — without the `0` min, a long tech chip
+    // (e.g. "Firebase (Storage, Cloud, FCM, Auth, Crashlytics)") would
+    // force the cell wider than its column and overflow the viewport.
     css('.timeline-item').styles(
       display: Display.grid,
-      gap: Gap(column: AppSpacing.lg.rem),
-      raw: {'grid-template-columns': 'auto 1fr'},
+      gap: Gap(column: AppSpacing.sm.rem),
+      raw: {'grid-template-columns': '20px minmax(0, 1fr)'},
     ),
+    // Defensive: ensure the card body cell can shrink to its column.
+    css('.timeline-item__body').styles(raw: {'min-width': '0'}),
 
     // ----- Rail (line + dot) -----
     css('.timeline-item__rail').styles(
       position: Position.relative(),
-      width: 24.px,
+      width: 20.px,
       raw: {'flex-shrink': '0'},
     ),
     css('.timeline-item__rail::before').styles(
       content: '""',
       display: Display.block,
-      position: Position.absolute(top: 14.px, bottom: Unit.zero, left: 11.px),
+      position: Position.absolute(top: 14.px, bottom: Unit.zero, left: 9.px),
       width: 2.px,
       raw: {'background': 'var(--divider)'},
     ),
     css('.timeline-item__dot').styles(
       display: Display.block,
-      width: 14.px,
-      height: 14.px,
-      margin: Margin.only(top: 8.px, left: 5.px),
+      width: 12.px,
+      height: 12.px,
+      margin: Margin.only(top: 8.px, left: 4.px),
       raw: {
         'border-radius': '50%',
         'background': 'var(--brand-gradient)',
-        'box-shadow': '0 0 0 4px rgba(108, 99, 255, 0.18)',
+        'box-shadow': '0 0 0 3px rgba(108, 99, 255, 0.18)',
       },
     ),
 
@@ -166,8 +172,33 @@ class TimelineItem extends StatelessComponent {
     css('.timeline-card__tech').styles(
       display: Display.flex,
       flexWrap: FlexWrap.wrap,
-      gap: const Gap(row: Unit.rem(0.5), column: Unit.rem(0.5)),
+      gap: const Gap(row: Unit.rem(0.4), column: Unit.rem(0.4)),
       margin: Margin.only(top: AppSpacing.xs.rem),
+    ),
+
+    // ===========================================================
+    // Tablet+ : restore generous rail spacing where the viewport
+    // actually has room. Below bpMd we keep the tighter mobile
+    // numbers so chips don't overflow.
+    // ===========================================================
+    css.media(
+      MediaQuery.raw('(min-width: ${AppSpacing.bpMd.toInt()}px)'),
+      [
+        css('.timeline-item').styles(
+          gap: Gap(column: AppSpacing.lg.rem),
+          raw: {'grid-template-columns': '24px minmax(0, 1fr)'},
+        ),
+        css('.timeline-item__rail').styles(width: 24.px),
+        css('.timeline-item__rail::before').styles(
+          position: Position.absolute(top: 14.px, bottom: Unit.zero, left: 11.px),
+        ),
+        css('.timeline-item__dot').styles(
+          width: 14.px,
+          height: 14.px,
+          margin: Margin.only(top: 8.px, left: 5.px),
+          raw: {'box-shadow': '0 0 0 4px rgba(108, 99, 255, 0.18)'},
+        ),
+      ],
     ),
   ];
 }
