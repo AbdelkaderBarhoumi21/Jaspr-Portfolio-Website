@@ -28,9 +28,10 @@ class Navbar extends StatelessComponent {
         div(classes: 'navbar__inner', [
           // Brand mark — links back to #home.
           //
-          // Inline SVG monogram instead of an <img> file so it can never
-          // 404 / load slow / break — and so it scales sharp at any DPI.
-          // The pill background uses the brand gradient defined in :root.
+          // Inline SVG of the owner's AB monogram (mirrors web/images/
+          // logo.svg). Inlined instead of <img> so the fill picks up the
+          // navbar's `color`, which lets the mark stay white on the
+          // gradient pill in both light and dark themes.
           a(
             href: AppAnchors.hash(AppAnchors.home),
             classes: 'navbar__brand',
@@ -40,19 +41,45 @@ class Navbar extends StatelessComponent {
                 attributes: const {'aria-hidden': 'true'},
                 [
                   svg(
-                    viewBox: '0 0 32 32',
+                    viewBox: '0 0 4000 4000',
                     attributes: const {'aria-hidden': 'true'},
                     [
-                      // Stylized "AB" monogram (two paths so the letters
-                      // can sit on a single visual baseline).
+                      // 4 sub-paths from the real logo. All filled white
+                      // via the parent span's `color: white` because the
+                      // SVG fill resolves to currentColor.
                       const path(
-                        d: 'M6.5 22 11 9h2.4l4.5 13h-2.4l-1.05-3.2H9.95L8.9 22zm4-5.1h3l-1.5-4.6z',
-                        attributes: {'fill': 'white'},
+                        d:
+                            'M2653.652,2828.257h249.704c231.174,0,420.312-189.139,420.312-420.311 '
+                            'c0-94.366-31.516-181.726-84.543-252.078c-26.72-35.45-58.903-66.58-95.268-92.111c-43.229,45.323-95.27,82.158-153.281,107.761 '
+                            'c10.292,3.826,20.272,8.306,29.889,13.391c80.082,42.351,134.97,126.595,134.97,223.037c0,138.644-113.445,252.078-252.08,252.078 '
+                            'h-89.86h-256.973L2653.652,2828.257z',
+                        attributes: {'fill': 'currentColor'},
                         [],
                       ),
                       const path(
-                        d: 'M19.2 22V9h4.6c1.5 0 2.6.34 3.3 1.02.7.67 1.05 1.6 1.05 2.78 0 .77-.17 1.42-.5 1.95a2.7 2.7 0 0 1-1.42 1.12c.78.21 1.4.6 1.85 1.16.46.56.69 1.27.69 2.13 0 1.21-.4 2.17-1.2 2.86-.8.7-1.92 1.05-3.37 1.05zm2.4-7.7h2.05c.65 0 1.13-.15 1.45-.45.32-.3.48-.7.48-1.21 0-.52-.16-.93-.48-1.22-.32-.3-.8-.45-1.45-.45h-2.05zm0 5.7h2.36c.71 0 1.24-.16 1.6-.5.36-.32.54-.78.54-1.36 0-.59-.18-1.05-.55-1.38-.36-.33-.9-.5-1.6-.5h-2.35z',
-                        attributes: {'fill': 'white'},
+                        d:
+                            'M1388.119,1931.875l194.658-337.155l147.078-254.745l-97.13-168.232 '
+                            'l-480.176,831.688c60.874-37.902,130.358-62.097,203.679-69.781C1367.007,1932.52,1377.54,1932.061,1388.119,1931.875',
+                        attributes: {'fill': 'currentColor'},
+                        [],
+                      ),
+                      const path(
+                        d:
+                            'M1877.257,1931.748l-341.661-591.771l97.13-168.234l438.791,760.005 '
+                            'H1877.257z M2394.861,2828.257l-267.338-463.04l-88.601-153.459h194.258l355.938,616.5H2394.861z',
+                        attributes: {'fill': 'currentColor'},
+                        [],
+                      ),
+                      const path(
+                        d:
+                            'M1384.934,2155.868h1414.597c231.174,0,420.311-189.139,420.311-420.311 '
+                            'c0-94.366-31.516-181.726-84.542-252.078c-35.99-47.748-81.889-87.66-134.567-116.609 '
+                            'c-49.912-27.427-105.911-45.013-165.335-50.096c-11.827-1.011-23.789-1.527-35.866-1.527H1780.112l97.13,168.232 '
+                            'c372.183,0,550.107,0,922.29,0c42.201,0,82.067,10.51,117.109,29.041c80.082,42.351,134.97,126.595,134.97,223.038 '
+                            'c0,138.644-113.448,252.078-252.079,252.078H1410.88c-17.175,0-31.42-0.224-48.828,1.598 '
+                            'c-129.593,13.581-251.357,86.686-321.113,207.508l-364.605,631.515H870.59l316.041-547.399 '
+                            'C1229.489,2206.624,1305.087,2162.419,1384.934,2155.868',
+                        attributes: {'fill': 'currentColor'},
                         [],
                       ),
                     ],
@@ -120,12 +147,14 @@ class Navbar extends StatelessComponent {
       },
     ),
     // .is-scrolled is added by JS once scrollY > 40
-    css('.navbar.is-scrolled').styles(raw: {
-      'background': 'var(--bg-translucent)',
-      'backdrop-filter': 'blur(14px) saturate(1.1)',
-      '-webkit-backdrop-filter': 'blur(14px) saturate(1.1)',
-      'border-bottom-color': 'var(--divider)',
-    }),
+    css('.navbar.is-scrolled').styles(
+      raw: {
+        'background': 'var(--bg-translucent)',
+        'backdrop-filter': 'blur(14px) saturate(1.1)',
+        '-webkit-backdrop-filter': 'blur(14px) saturate(1.1)',
+        'border-bottom-color': 'var(--divider)',
+      },
+    ),
     css('.navbar__inner').styles(
       display: Display.flex,
       width: 100.percent,
@@ -146,13 +175,16 @@ class Navbar extends StatelessComponent {
       fontWeight: AppTypography.semibold,
       textDecoration: const TextDecoration(line: TextDecorationLine.none),
     ),
-    // Inline-SVG brand mark — gradient pill with the AB monogram.
+    // Inline-SVG brand mark — gradient pill with the AB monogram on top.
+    // `color: white` makes the SVG paths paint white because their
+    // fill is `currentColor`.
     css('.navbar__brand-mark').styles(
       display: Display.inlineFlex,
       width: 32.px,
       height: 32.px,
       justifyContent: JustifyContent.center,
       alignItems: AlignItems.center,
+      color: Colors.white,
       raw: {
         'background': 'var(--brand-gradient)',
         'border-radius': '${AppSpacing.radiusSm}px',
@@ -161,8 +193,8 @@ class Navbar extends StatelessComponent {
     ),
     css('.navbar__brand-mark svg').styles(
       display: Display.block,
-      width: 22.px,
-      height: 22.px,
+      width: 20.px,
+      height: 20.px,
     ),
     css('.navbar__brand-name').styles(
       fontFamily: const FontFamily.list([
@@ -273,15 +305,21 @@ class Navbar extends StatelessComponent {
       },
     ),
     // Open state — collapse to an X.
-    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(1)').styles(raw: {
-      'transform': 'translateY(7px) rotate(45deg)',
-    }),
-    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(2)').styles(raw: {
-      'opacity': '0',
-    }),
-    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(3)').styles(raw: {
-      'transform': 'translateY(-7px) rotate(-45deg)',
-    }),
+    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(1)').styles(
+      raw: {
+        'transform': 'translateY(7px) rotate(45deg)',
+      },
+    ),
+    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(2)').styles(
+      raw: {
+        'opacity': '0',
+      },
+    ),
+    css('.nav-toggle.is-open .nav-toggle__bar:nth-child(3)').styles(
+      raw: {
+        'transform': 'translateY(-7px) rotate(-45deg)',
+      },
+    ),
 
     // ----- Drawer -----
     css('.mobile-menu').styles(
@@ -302,11 +340,13 @@ class Navbar extends StatelessComponent {
             'transform 220ms var(--ease-out)',
       },
     ),
-    css('.mobile-menu.is-open').styles(raw: {
-      'transform': 'translateY(0)',
-      'opacity': '1',
-      'pointer-events': 'auto',
-    }),
+    css('.mobile-menu.is-open').styles(
+      raw: {
+        'transform': 'translateY(0)',
+        'opacity': '1',
+        'pointer-events': 'auto',
+      },
+    ),
     css('.mobile-menu__links').styles(
       display: Display.flex,
       flexDirection: FlexDirection.column,
@@ -375,9 +415,7 @@ class MobileNavToggleState extends State<MobileNavToggle> {
       ),
       // Drawer.
       div(
-        classes: isOpen
-            ? 'mobile-menu is-open glass'
-            : 'mobile-menu glass',
+        classes: isOpen ? 'mobile-menu is-open glass' : 'mobile-menu glass',
         [
           ul(classes: 'mobile-menu__links', [
             for (final item in AppAnchors.items)
@@ -398,5 +436,4 @@ class MobileNavToggleState extends State<MobileNavToggle> {
       ),
     ]);
   }
-
 }
