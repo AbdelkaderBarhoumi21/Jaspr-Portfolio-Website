@@ -1,4 +1,7 @@
-// Professional experience timeline data, most-recent first.
+// Professional experience timeline data.
+//
+// Order: current roles first (both "Present"), then past roles in
+// reverse chronological order.
 //
 // Bullets follow the content-writer voice: lead with verbs, ≤22 words each,
 // concrete tech named explicitly. See .claude/agents/content-writer.md.
@@ -6,6 +9,7 @@
 import '../domain/models/experience.dart';
 
 const List<Experience> experiences = [
+  // ---- Current ----------------------------------------------------------
   Experience(
     company: 'Oxton Digital',
     role: 'Mobile Software Engineer — Flutter & Android',
@@ -24,23 +28,6 @@ const List<Experience> experiences = [
     ],
   ),
   Experience(
-    company: 'Sifartek',
-    role: 'Mobile Software Engineer — Flutter',
-    location: 'Algiers, Algeria · Remote',
-    period: 'Feb 2026 – Present',
-    bullets: [
-      'Optimized a Flutter app for seamless IoT sensor connectivity over BLE (MDS, Nordic) and Wi-Fi protocols.',
-      'Implemented Drift-backed local storage for offline-first usage with automatic cloud synchronization.',
-      'Set up unit, widget, and integration tests against Firebase services to guarantee data consistency.',
-    ],
-    tech: [
-      'Flutter', 'Dart', 'BLoC/Cubit',
-      'BLE (MDS, Nordic)', 'OpenAPI', 'Drift',
-      'Firebase (Storage, Cloud, FCM, Auth, Crashlytics)',
-      'Cloud Sync', 'Testing',
-    ],
-  ),
-  Experience(
     company: 'Stoneslane',
     role: 'Mobile Engineer — Flutter',
     location: 'Dubai, UAE · Remote',
@@ -56,6 +43,25 @@ const List<Experience> experiences = [
       'Firebase (Auth, FCM, Crashlytics, Performance, Remote Config)',
       'Algolia', 'Google Maps', 'Payments',
       'CI/CD', 'Fastlane', 'Docker',
+    ],
+  ),
+
+  // ---- Past -------------------------------------------------------------
+  Experience(
+    company: 'Sifartek',
+    role: 'Mobile Software Engineer — Flutter',
+    location: 'Algiers, Algeria · Remote',
+    period: 'Feb 2026 – Apr 2026',
+    bullets: [
+      'Optimized a Flutter app for seamless IoT sensor connectivity over BLE (MDS, Nordic) and Wi-Fi protocols.',
+      'Implemented Drift-backed local storage for offline-first usage with automatic cloud synchronization.',
+      'Set up unit, widget, and integration tests against Firebase services to guarantee data consistency.',
+    ],
+    tech: [
+      'Flutter', 'Dart', 'BLoC/Cubit',
+      'BLE (MDS, Nordic)', 'OpenAPI', 'Drift',
+      'Firebase (Storage, Cloud, FCM, Auth, Crashlytics)',
+      'Cloud Sync', 'Testing',
     ],
   ),
   Experience(

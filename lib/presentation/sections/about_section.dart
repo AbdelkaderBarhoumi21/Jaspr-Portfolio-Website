@@ -1,4 +1,3 @@
-
 import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
@@ -337,19 +336,11 @@ class _BioTile extends StatelessComponent {
         span(classes: 'bento-tile__eyebrow', [Component.text('// who')]),
         p([
           Component.text(
-            "I'm a Mechatronics engineer turned Mobile Software Engineer based "
-            "in ${ProfileData.location}, shipping cross-platform Flutter apps "
-            "and migrating native Android codebases to Kotlin + Jetpack Compose. "
-            "I care about clean architecture, predictable state, and code that "
-            "stays maintainable as teams and features grow.",
-          ),
-        ]),
-        p([
-          Component.text(
-            'My embedded background means I’m comfortable bridging hardware '
-            'and software — BLE, IoT sensors, real-time data, and offline-first '
-            'storage are all familiar territory. On the backend I reach for '
-            'Rust (Axum), Node.js, or Laravel depending on the constraints.',
+            'Mechatronics engineer turned Mobile Software Engineer in '
+            '${ProfileData.location}. Shipping cross-platform Flutter apps, '
+            'migrating Android codebases to Kotlin + Jetpack Compose, and '
+            'bridging hardware and software through BLE, IoT, and '
+            'offline-first storage.',
           ),
         ]),
       ],

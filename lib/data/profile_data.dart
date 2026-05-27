@@ -28,8 +28,8 @@ abstract final class ProfileData {
   ];
 
   // ---------- Stats (used on the About section highlight cards) ----------
-  static const String yearsExperience = '3+';
-  static const String appsShipped     = '10+';
+  static const String yearsExperience = '1+';
+  static const String appsShipped     = '5+';
   static const String spokenLanguages = '3';
 
   // ---------- Current status (the "Now" bento card) ----------
